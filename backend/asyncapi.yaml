@@ -1,0 +1,1658 @@
+asyncapi: 2.0.0
+info:
+  title: PerfumeShop Realtime Events API
+  version: 1.0.0
+  description: Realtime event system for PerfumeShop e-commerce platform handling
+    live updates for cart, orders, inventory, and user interactions
+servers:
+  websocket:
+    url: ws://localhost:3000/ws
+    protocol: ws
+    description: WebSocket server for realtime events
+channels:
+  user/{user_id}/cart:
+    description: User-specific cart updates
+    parameters:
+      user_id:
+        description: Unique identifier for the user
+        schema:
+          type: string
+    subscribe:
+      operationId: subscribeToUserCart
+      message:
+        oneOf:
+          - $ref: "#/components/messages/CartItemAdded"
+          - $ref: "#/components/messages/CartItemUpdated"
+          - $ref: "#/components/messages/CartItemRemoved"
+          - $ref: "#/components/messages/CartCleared"
+          - $ref: "#/components/messages/CartTotalsUpdated"
+    publish:
+      operationId: publishCartUpdate
+      message:
+        oneOf:
+          - $ref: "#/components/messages/AddToCartRequest"
+          - $ref: "#/components/messages/UpdateCartItemRequest"
+          - $ref: "#/components/messages/RemoveFromCartRequest"
+          - $ref: "#/components/messages/ClearCartRequest"
+  user/{user_id}/orders:
+    description: User-specific order status updates
+    parameters:
+      user_id:
+        description: Unique identifier for the user
+        schema:
+          type: string
+    subscribe:
+      operationId: subscribeToUserOrders
+      message:
+        oneOf:
+          - $ref: "#/components/messages/OrderStatusUpdated"
+          - $ref: "#/components/messages/OrderCreated"
+          - $ref: "#/components/messages/OrderShipped"
+          - $ref: "#/components/messages/OrderDelivered"
+          - $ref: "#/components/messages/OrderCancelled"
+  user/{user_id}/wishlist:
+    description: User-specific wishlist updates
+    parameters:
+      user_id:
+        description: Unique identifier for the user
+        schema:
+          type: string
+    subscribe:
+      operationId: subscribeToUserWishlist
+      message:
+        oneOf:
+          - $ref: "#/components/messages/WishlistItemAdded"
+          - $ref: "#/components/messages/WishlistItemRemoved"
+    publish:
+      operationId: publishWishlistUpdate
+      message:
+        oneOf:
+          - $ref: "#/components/messages/AddToWishlistRequest"
+          - $ref: "#/components/messages/RemoveFromWishlistRequest"
+  user/{user_id}/auth:
+    description: User authentication state changes
+    parameters:
+      user_id:
+        description: Unique identifier for the user
+        schema:
+          type: string
+    subscribe:
+      operationId: subscribeToUserAuth
+      message:
+        oneOf:
+          - $ref: "#/components/messages/UserLoggedIn"
+          - $ref: "#/components/messages/UserLoggedOut"
+          - $ref: "#/components/messages/UserSessionExpired"
+          - $ref: "#/components/messages/UserProfileUpdated"
+  product/{product_id}/updates:
+    description: Product-specific updates including inventory and pricing
+    parameters:
+      product_id:
+        description: Unique identifier for the product
+        schema:
+          type: string
+    subscribe:
+      operationId: subscribeToProductUpdates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/ProductUpdated"
+          - $ref: "#/components/messages/ProductInventoryChanged"
+          - $ref: "#/components/messages/ProductPriceChanged"
+          - $ref: "#/components/messages/ProductStatusChanged"
+          - $ref: "#/components/messages/ProductViewCountUpdated"
+  product/{product_id}/activity:
+    description: Real-time product activity and engagement
+    parameters:
+      product_id:
+        description: Unique identifier for the product
+        schema:
+          type: string
+    subscribe:
+      operationId: subscribeToProductActivity
+      message:
+        oneOf:
+          - $ref: "#/components/messages/ProductViewed"
+          - $ref: "#/components/messages/ProductAddedToCart"
+          - $ref: "#/components/messages/ProductPurchased"
+  admin/orders:
+    description: Admin notifications for order management
+    subscribe:
+      operationId: subscribeToAdminOrders
+      message:
+        oneOf:
+          - $ref: "#/components/messages/NewOrderReceived"
+          - $ref: "#/components/messages/OrderRequiresAttention"
+          - $ref: "#/components/messages/PaymentFailed"
+          - $ref: "#/components/messages/RefundRequested"
+  admin/inventory:
+    description: Admin notifications for inventory management
+    subscribe:
+      operationId: subscribeToAdminInventory
+      message:
+        oneOf:
+          - $ref: "#/components/messages/LowStockAlert"
+          - $ref: "#/components/messages/OutOfStockAlert"
+          - $ref: "#/components/messages/InventoryAdjusted"
+  admin/reviews:
+    description: Admin notifications for review management
+    subscribe:
+      operationId: subscribeToAdminReviews
+      message:
+        oneOf:
+          - $ref: "#/components/messages/NewReviewSubmitted"
+          - $ref: "#/components/messages/ReviewRequiresModeration"
+  global/products:
+    description: Global product catalog updates
+    subscribe:
+      operationId: subscribeToGlobalProducts
+      message:
+        oneOf:
+          - $ref: "#/components/messages/ProductCatalogUpdated"
+          - $ref: "#/components/messages/FeaturedProductsChanged"
+          - $ref: "#/components/messages/ProductPromotionStarted"
+          - $ref: "#/components/messages/ProductPromotionEnded"
+  global/system:
+    description: System-wide notifications and updates
+    subscribe:
+      operationId: subscribeToSystemUpdates
+      message:
+        oneOf:
+          - $ref: "#/components/messages/SystemMaintenanceScheduled"
+          - $ref: "#/components/messages/SystemMaintenanceStarted"
+          - $ref: "#/components/messages/SystemMaintenanceEnded"
+components:
+  messages:
+    CartItemAdded:
+      payload:
+        $ref: "#/components/schemas/CartItemAddedPayload"
+    CartItemUpdated:
+      payload:
+        $ref: "#/components/schemas/CartItemUpdatedPayload"
+    CartItemRemoved:
+      payload:
+        $ref: "#/components/schemas/CartItemRemovedPayload"
+    CartCleared:
+      payload:
+        $ref: "#/components/schemas/CartClearedPayload"
+    CartTotalsUpdated:
+      payload:
+        $ref: "#/components/schemas/CartTotalsUpdatedPayload"
+    AddToCartRequest:
+      payload:
+        $ref: "#/components/schemas/AddToCartRequestPayload"
+    UpdateCartItemRequest:
+      payload:
+        $ref: "#/components/schemas/UpdateCartItemRequestPayload"
+    RemoveFromCartRequest:
+      payload:
+        $ref: "#/components/schemas/RemoveFromCartRequestPayload"
+    ClearCartRequest:
+      payload:
+        $ref: "#/components/schemas/ClearCartRequestPayload"
+    OrderStatusUpdated:
+      payload:
+        $ref: "#/components/schemas/OrderStatusUpdatedPayload"
+    OrderCreated:
+      payload:
+        $ref: "#/components/schemas/OrderCreatedPayload"
+    OrderShipped:
+      payload:
+        $ref: "#/components/schemas/OrderShippedPayload"
+    OrderDelivered:
+      payload:
+        $ref: "#/components/schemas/OrderDeliveredPayload"
+    OrderCancelled:
+      payload:
+        $ref: "#/components/schemas/OrderCancelledPayload"
+    WishlistItemAdded:
+      payload:
+        $ref: "#/components/schemas/WishlistItemAddedPayload"
+    WishlistItemRemoved:
+      payload:
+        $ref: "#/components/schemas/WishlistItemRemovedPayload"
+    AddToWishlistRequest:
+      payload:
+        $ref: "#/components/schemas/AddToWishlistRequestPayload"
+    RemoveFromWishlistRequest:
+      payload:
+        $ref: "#/components/schemas/RemoveFromWishlistRequestPayload"
+    UserLoggedIn:
+      payload:
+        $ref: "#/components/schemas/UserLoggedInPayload"
+    UserLoggedOut:
+      payload:
+        $ref: "#/components/schemas/UserLoggedOutPayload"
+    UserSessionExpired:
+      payload:
+        $ref: "#/components/schemas/UserSessionExpiredPayload"
+    UserProfileUpdated:
+      payload:
+        $ref: "#/components/schemas/UserProfileUpdatedPayload"
+    ProductUpdated:
+      payload:
+        $ref: "#/components/schemas/ProductUpdatedPayload"
+    ProductInventoryChanged:
+      payload:
+        $ref: "#/components/schemas/ProductInventoryChangedPayload"
+    ProductPriceChanged:
+      payload:
+        $ref: "#/components/schemas/ProductPriceChangedPayload"
+    ProductStatusChanged:
+      payload:
+        $ref: "#/components/schemas/ProductStatusChangedPayload"
+    ProductViewCountUpdated:
+      payload:
+        $ref: "#/components/schemas/ProductViewCountUpdatedPayload"
+    ProductViewed:
+      payload:
+        $ref: "#/components/schemas/ProductViewedPayload"
+    ProductAddedToCart:
+      payload:
+        $ref: "#/components/schemas/ProductAddedToCartPayload"
+    ProductPurchased:
+      payload:
+        $ref: "#/components/schemas/ProductPurchasedPayload"
+    NewOrderReceived:
+      payload:
+        $ref: "#/components/schemas/NewOrderReceivedPayload"
+    OrderRequiresAttention:
+      payload:
+        $ref: "#/components/schemas/OrderRequiresAttentionPayload"
+    PaymentFailed:
+      payload:
+        $ref: "#/components/schemas/PaymentFailedPayload"
+    RefundRequested:
+      payload:
+        $ref: "#/components/schemas/RefundRequestedPayload"
+    LowStockAlert:
+      payload:
+        $ref: "#/components/schemas/LowStockAlertPayload"
+    OutOfStockAlert:
+      payload:
+        $ref: "#/components/schemas/OutOfStockAlertPayload"
+    InventoryAdjusted:
+      payload:
+        $ref: "#/components/schemas/InventoryAdjustedPayload"
+    NewReviewSubmitted:
+      payload:
+        $ref: "#/components/schemas/NewReviewSubmittedPayload"
+    ReviewRequiresModeration:
+      payload:
+        $ref: "#/components/schemas/ReviewRequiresModerationPayload"
+    ProductCatalogUpdated:
+      payload:
+        $ref: "#/components/schemas/ProductCatalogUpdatedPayload"
+    FeaturedProductsChanged:
+      payload:
+        $ref: "#/components/schemas/FeaturedProductsChangedPayload"
+    ProductPromotionStarted:
+      payload:
+        $ref: "#/components/schemas/ProductPromotionStartedPayload"
+    ProductPromotionEnded:
+      payload:
+        $ref: "#/components/schemas/ProductPromotionEndedPayload"
+    SystemMaintenanceScheduled:
+      payload:
+        $ref: "#/components/schemas/SystemMaintenanceScheduledPayload"
+    SystemMaintenanceStarted:
+      payload:
+        $ref: "#/components/schemas/SystemMaintenanceStartedPayload"
+    SystemMaintenanceEnded:
+      payload:
+        $ref: "#/components/schemas/SystemMaintenanceEndedPayload"
+  schemas:
+    CartItemAddedPayload:
+      type: object
+      required:
+        - event_type
+        - user_id
+        - cart_item
+        - cart_totals
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - cart_item_added
+        user_id:
+          type: string
+        session_id:
+          type: string
+        cart_item:
+          $ref: "#/components/schemas/CartItem"
+        cart_totals:
+          $ref: "#/components/schemas/CartTotals"
+        timestamp:
+          type: string
+          format: date-time
+    CartItemUpdatedPayload:
+      type: object
+      required:
+        - event_type
+        - user_id
+        - cart_item
+        - cart_totals
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - cart_item_updated
+        user_id:
+          type: string
+        session_id:
+          type: string
+        cart_item:
+          $ref: "#/components/schemas/CartItem"
+        previous_quantity:
+          type: integer
+        cart_totals:
+          $ref: "#/components/schemas/CartTotals"
+        timestamp:
+          type: string
+          format: date-time
+    CartItemRemovedPayload:
+      type: object
+      required:
+        - event_type
+        - user_id
+        - cart_item_id
+        - product_id
+        - cart_totals
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - cart_item_removed
+        user_id:
+          type: string
+        session_id:
+          type: string
+        cart_item_id:
+          type: string
+        product_id:
+          type: string
+        cart_totals:
+          $ref: "#/components/schemas/CartTotals"
+        timestamp:
+          type: string
+          format: date-time
+    CartClearedPayload:
+      type: object
+      required:
+        - event_type
+        - user_id
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - cart_cleared
+        user_id:
+          type: string
+        session_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    CartTotalsUpdatedPayload:
+      type: object
+      required:
+        - event_type
+        - user_id
+        - cart_totals
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - cart_totals_updated
+        user_id:
+          type: string
+        session_id:
+          type: string
+        cart_totals:
+          $ref: "#/components/schemas/CartTotals"
+        timestamp:
+          type: string
+          format: date-time
+    AddToCartRequestPayload:
+      type: object
+      required:
+        - product_id
+        - quantity
+      properties:
+        product_id:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+    UpdateCartItemRequestPayload:
+      type: object
+      required:
+        - cart_item_id
+        - quantity
+      properties:
+        cart_item_id:
+          type: string
+        quantity:
+          type: integer
+          minimum: 1
+    RemoveFromCartRequestPayload:
+      type: object
+      required:
+        - cart_item_id
+      properties:
+        cart_item_id:
+          type: string
+    ClearCartRequestPayload:
+      type: object
+      properties:
+        confirm:
+          type: boolean
+          default: true
+    OrderStatusUpdatedPayload:
+      type: object
+      required:
+        - event_type
+        - order_id
+        - user_id
+        - old_status
+        - new_status
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - order_status_updated
+        order_id:
+          type: string
+        user_id:
+          type: string
+        old_status:
+          type: string
+        new_status:
+          type: string
+          enum:
+            - pending
+            - processing
+            - shipped
+            - delivered
+            - cancelled
+            - refunded
+        notes:
+          type: string
+        changed_by_admin_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    OrderCreatedPayload:
+      type: object
+      required:
+        - event_type
+        - order
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - order_created
+        order:
+          $ref: "#/components/schemas/Order"
+        timestamp:
+          type: string
+          format: date-time
+    OrderShippedPayload:
+      type: object
+      required:
+        - event_type
+        - order_id
+        - user_id
+        - tracking_number
+        - estimated_delivery_date
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - order_shipped
+        order_id:
+          type: string
+        user_id:
+          type: string
+        tracking_number:
+          type: string
+        estimated_delivery_date:
+          type: string
+          format: date-time
+        shipping_method:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    OrderDeliveredPayload:
+      type: object
+      required:
+        - event_type
+        - order_id
+        - user_id
+        - delivered_at
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - order_delivered
+        order_id:
+          type: string
+        user_id:
+          type: string
+        delivered_at:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+    OrderCancelledPayload:
+      type: object
+      required:
+        - event_type
+        - order_id
+        - user_id
+        - reason
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - order_cancelled
+        order_id:
+          type: string
+        user_id:
+          type: string
+        reason:
+          type: string
+        refund_amount:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+    WishlistItemAddedPayload:
+      type: object
+      required:
+        - event_type
+        - user_id
+        - wishlist_item
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - wishlist_item_added
+        user_id:
+          type: string
+        wishlist_item:
+          $ref: "#/components/schemas/WishlistItem"
+        timestamp:
+          type: string
+          format: date-time
+    WishlistItemRemovedPayload:
+      type: object
+      required:
+        - event_type
+        - user_id
+        - wishlist_item_id
+        - product_id
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - wishlist_item_removed
+        user_id:
+          type: string
+        wishlist_item_id:
+          type: string
+        product_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    AddToWishlistRequestPayload:
+      type: object
+      required:
+        - product_id
+      properties:
+        product_id:
+          type: string
+    RemoveFromWishlistRequestPayload:
+      type: object
+      required:
+        - wishlist_item_id
+      properties:
+        wishlist_item_id:
+          type: string
+    UserLoggedInPayload:
+      type: object
+      required:
+        - event_type
+        - user
+        - session_id
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - user_logged_in
+        user:
+          $ref: "#/components/schemas/User"
+        session_id:
+          type: string
+        ip_address:
+          type: string
+        user_agent:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    UserLoggedOutPayload:
+      type: object
+      required:
+        - event_type
+        - user_id
+        - session_id
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - user_logged_out
+        user_id:
+          type: string
+        session_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    UserSessionExpiredPayload:
+      type: object
+      required:
+        - event_type
+        - user_id
+        - session_id
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - user_session_expired
+        user_id:
+          type: string
+        session_id:
+          type: string
+        expired_at:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+    UserProfileUpdatedPayload:
+      type: object
+      required:
+        - event_type
+        - user_id
+        - updated_fields
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - user_profile_updated
+        user_id:
+          type: string
+        updated_fields:
+          type: array
+          items:
+            type: string
+        user:
+          $ref: "#/components/schemas/User"
+        timestamp:
+          type: string
+          format: date-time
+    ProductUpdatedPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - updated_fields
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_updated
+        product_id:
+          type: string
+        updated_fields:
+          type: array
+          items:
+            type: string
+        product:
+          $ref: "#/components/schemas/Product"
+        timestamp:
+          type: string
+          format: date-time
+    ProductInventoryChangedPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - old_quantity
+        - new_quantity
+        - adjustment_type
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_inventory_changed
+        product_id:
+          type: string
+        old_quantity:
+          type: integer
+        new_quantity:
+          type: integer
+        quantity_change:
+          type: integer
+        adjustment_type:
+          type: string
+          enum:
+            - sale
+            - restock
+            - adjustment
+            - damaged
+            - expired
+        reason:
+          type: string
+        admin_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    ProductPriceChangedPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - old_price
+        - new_price
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_price_changed
+        product_id:
+          type: string
+        old_price:
+          type: number
+        new_price:
+          type: number
+        old_sale_price:
+          type: number
+        new_sale_price:
+          type: number
+        admin_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    ProductStatusChangedPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - old_status
+        - new_status
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_status_changed
+        product_id:
+          type: string
+        old_status:
+          type: string
+        new_status:
+          type: string
+        is_active:
+          type: boolean
+        is_featured:
+          type: boolean
+        admin_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    ProductViewCountUpdatedPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - view_count
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_view_count_updated
+        product_id:
+          type: string
+        view_count:
+          type: integer
+        increment:
+          type: integer
+          default: 1
+        timestamp:
+          type: string
+          format: date-time
+    ProductViewedPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_viewed
+        product_id:
+          type: string
+        user_id:
+          type: string
+        session_id:
+          type: string
+        referrer:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    ProductAddedToCartPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - quantity
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_added_to_cart
+        product_id:
+          type: string
+        user_id:
+          type: string
+        session_id:
+          type: string
+        quantity:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+    ProductPurchasedPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - order_id
+        - quantity
+        - price
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_purchased
+        product_id:
+          type: string
+        order_id:
+          type: string
+        user_id:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+        line_total:
+          type: number
+        timestamp:
+          type: string
+          format: date-time
+    NewOrderReceivedPayload:
+      type: object
+      required:
+        - event_type
+        - order
+        - priority
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - new_order_received
+        order:
+          $ref: "#/components/schemas/Order"
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+            - urgent
+        requires_immediate_attention:
+          type: boolean
+        timestamp:
+          type: string
+          format: date-time
+    OrderRequiresAttentionPayload:
+      type: object
+      required:
+        - event_type
+        - order_id
+        - reason
+        - priority
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - order_requires_attention
+        order_id:
+          type: string
+        reason:
+          type: string
+        priority:
+          type: string
+          enum:
+            - low
+            - normal
+            - high
+            - urgent
+        details:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    PaymentFailedPayload:
+      type: object
+      required:
+        - event_type
+        - order_id
+        - payment_method
+        - failure_reason
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - payment_failed
+        order_id:
+          type: string
+        payment_method:
+          type: string
+        failure_reason:
+          type: string
+        transaction_id:
+          type: string
+        amount:
+          type: number
+        retry_count:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+    RefundRequestedPayload:
+      type: object
+      required:
+        - event_type
+        - order_id
+        - refund_amount
+        - reason
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - refund_requested
+        order_id:
+          type: string
+        user_id:
+          type: string
+        refund_amount:
+          type: number
+        reason:
+          type: string
+        request_details:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    LowStockAlertPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - current_stock
+        - threshold
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - low_stock_alert
+        product_id:
+          type: string
+        product_name:
+          type: string
+        current_stock:
+          type: integer
+        threshold:
+          type: integer
+        days_until_out_of_stock:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+    OutOfStockAlertPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - out_of_stock_alert
+        product_id:
+          type: string
+        product_name:
+          type: string
+        last_sale_date:
+          type: string
+          format: date-time
+        pending_orders_count:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+    InventoryAdjustedPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - adjustment
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - inventory_adjusted
+        product_id:
+          type: string
+        adjustment:
+          $ref: "#/components/schemas/InventoryAdjustment"
+        timestamp:
+          type: string
+          format: date-time
+    NewReviewSubmittedPayload:
+      type: object
+      required:
+        - event_type
+        - review
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - new_review_submitted
+        review:
+          $ref: "#/components/schemas/ProductReview"
+        product_name:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    ReviewRequiresModerationPayload:
+      type: object
+      required:
+        - event_type
+        - review_id
+        - reason
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - review_requires_moderation
+        review_id:
+          type: string
+        reason:
+          type: string
+        review_content:
+          type: string
+        product_id:
+          type: string
+        user_id:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    ProductCatalogUpdatedPayload:
+      type: object
+      required:
+        - event_type
+        - changes
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_catalog_updated
+        changes:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum:
+                  - added
+                  - updated
+                  - removed
+              product_id:
+                type: string
+              changes:
+                type: array
+                items:
+                  type: string
+        total_products:
+          type: integer
+        timestamp:
+          type: string
+          format: date-time
+    FeaturedProductsChangedPayload:
+      type: object
+      required:
+        - event_type
+        - featured_products
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - featured_products_changed
+        featured_products:
+          type: array
+          items:
+            type: string
+        previously_featured:
+          type: array
+          items:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+    ProductPromotionStartedPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - promotion_type
+        - discount_value
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_promotion_started
+        product_id:
+          type: string
+        promotion_type:
+          type: string
+          enum:
+            - percentage
+            - fixed
+            - buy_one_get_one
+        discount_value:
+          type: number
+        starts_at:
+          type: string
+          format: date-time
+        ends_at:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+    ProductPromotionEndedPayload:
+      type: object
+      required:
+        - event_type
+        - product_id
+        - promotion_type
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - product_promotion_ended
+        product_id:
+          type: string
+        promotion_type:
+          type: string
+        ended_at:
+          type: string
+          format: date-time
+        timestamp:
+          type: string
+          format: date-time
+    SystemMaintenanceScheduledPayload:
+      type: object
+      required:
+        - event_type
+        - scheduled_at
+        - estimated_duration
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - system_maintenance_scheduled
+        scheduled_at:
+          type: string
+          format: date-time
+        estimated_duration:
+          type: integer
+        maintenance_type:
+          type: string
+        affected_services:
+          type: array
+          items:
+            type: string
+        timestamp:
+          type: string
+          format: date-time
+    SystemMaintenanceStartedPayload:
+      type: object
+      required:
+        - event_type
+        - started_at
+        - estimated_end_time
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - system_maintenance_started
+        started_at:
+          type: string
+          format: date-time
+        estimated_end_time:
+          type: string
+          format: date-time
+        maintenance_type:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    SystemMaintenanceEndedPayload:
+      type: object
+      required:
+        - event_type
+        - ended_at
+        - timestamp
+      properties:
+        event_type:
+          type: string
+          enum:
+            - system_maintenance_ended
+        ended_at:
+          type: string
+          format: date-time
+        maintenance_type:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    User:
+      type: object
+      required:
+        - user_id
+        - email
+        - first_name
+        - last_name
+        - email_verified
+        - is_active
+        - created_at
+        - updated_at
+      properties:
+        user_id:
+          type: string
+        email:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+        email_verified:
+          type: boolean
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Product:
+      type: object
+      required:
+        - product_id
+        - name
+        - price
+        - stock_quantity
+        - sku
+        - brand
+        - size_volume
+        - is_active
+        - is_featured
+        - view_count
+        - sales_count
+        - created_at
+        - updated_at
+      properties:
+        product_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        sale_price:
+          type: number
+        stock_quantity:
+          type: integer
+        sku:
+          type: string
+        brand:
+          type: string
+        fragrance_notes_top:
+          type: array
+          items:
+            type: string
+        fragrance_notes_middle:
+          type: array
+          items:
+            type: string
+        fragrance_notes_base:
+          type: array
+          items:
+            type: string
+        size_volume:
+          type: string
+        category_id:
+          type: string
+        is_active:
+          type: boolean
+        is_featured:
+          type: boolean
+        meta_title:
+          type: string
+        meta_description:
+          type: string
+        view_count:
+          type: integer
+        sales_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CartItem:
+      type: object
+      required:
+        - cart_item_id
+        - product_id
+        - quantity
+        - added_at
+        - updated_at
+      properties:
+        cart_item_id:
+          type: string
+        user_id:
+          type: string
+        session_id:
+          type: string
+        product_id:
+          type: string
+        quantity:
+          type: integer
+        added_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CartTotals:
+      type: object
+      required:
+        - total_quantity
+        - subtotal
+        - shipping_cost
+        - tax_amount
+        - total_amount
+      properties:
+        total_quantity:
+          type: integer
+        subtotal:
+          type: number
+        shipping_cost:
+          type: number
+        tax_amount:
+          type: number
+        discount_amount:
+          type: number
+          default: 0
+        total_amount:
+          type: number
+    Order:
+      type: object
+      required:
+        - order_id
+        - order_number
+        - status
+        - subtotal
+        - shipping_cost
+        - tax_amount
+        - discount_amount
+        - total_amount
+        - currency
+        - payment_method
+        - payment_status
+        - shipping_address_id
+        - billing_address_id
+        - shipping_method
+        - created_at
+        - updated_at
+      properties:
+        order_id:
+          type: string
+        order_number:
+          type: string
+        user_id:
+          type: string
+        guest_email:
+          type: string
+        status:
+          type: string
+          enum:
+            - pending
+            - processing
+            - shipped
+            - delivered
+            - cancelled
+            - refunded
+        subtotal:
+          type: number
+        shipping_cost:
+          type: number
+        tax_amount:
+          type: number
+        discount_amount:
+          type: number
+        total_amount:
+          type: number
+        currency:
+          type: string
+        payment_method:
+          type: string
+        payment_status:
+          type: string
+          enum:
+            - pending
+            - paid
+            - failed
+            - refunded
+        payment_transaction_id:
+          type: string
+        shipping_address_id:
+          type: string
+        billing_address_id:
+          type: string
+        shipping_method:
+          type: string
+        tracking_number:
+          type: string
+        estimated_delivery_date:
+          type: string
+          format: date-time
+        delivered_at:
+          type: string
+          format: date-time
+        notes:
+          type: string
+        promo_code:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    WishlistItem:
+      type: object
+      required:
+        - wishlist_item_id
+        - user_id
+        - product_id
+        - added_at
+      properties:
+        wishlist_item_id:
+          type: string
+        user_id:
+          type: string
+        product_id:
+          type: string
+        added_at:
+          type: string
+          format: date-time
+    ProductReview:
+      type: object
+      required:
+        - review_id
+        - product_id
+        - user_id
+        - rating
+        - is_verified_purchase
+        - is_approved
+        - helpful_votes
+        - created_at
+        - updated_at
+      properties:
+        review_id:
+          type: string
+        product_id:
+          type: string
+        user_id:
+          type: string
+        order_id:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        title:
+          type: string
+        comment:
+          type: string
+        is_verified_purchase:
+          type: boolean
+        is_approved:
+          type: boolean
+        admin_response:
+          type: string
+        helpful_votes:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    InventoryAdjustment:
+      type: object
+      required:
+        - adjustment_id
+        - product_id
+        - adjustment_type
+        - quantity_change
+        - old_quantity
+        - new_quantity
+        - created_at
+      properties:
+        adjustment_id:
+          type: string
+        product_id:
+          type: string
+        adjustment_type:
+          type: string
+          enum:
+            - sale
+            - restock
+            - adjustment
+            - damaged
+            - expired
+        quantity_change:
+          type: integer
+        old_quantity:
+          type: integer
+        new_quantity:
+          type: integer
+        reason:
+          type: string
+        admin_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time

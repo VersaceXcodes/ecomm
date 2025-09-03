@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756940058684,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Wishlist",
+      "version": "latest"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/components/views/UV_Wishlist.tsx",
+      "type": "text",
+      "size": 22170,
+      "dependencies": false
+    }
+  ]
+}

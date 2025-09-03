@@ -1,0 +1,15 @@
+{
+  "timestamp": 1756940060520,
+  "operation": {
+    "id": "settings:config:package"
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/package.json",
+      "type": "text",
+      "size": 2974,
+      "dependencies": true
+    }
+  ]
+}

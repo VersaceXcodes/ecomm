@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756940042925,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_AdminLogin",
+      "version": "latest"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/components/views/UV_AdminLogin.tsx",
+      "type": "text",
+      "size": 17220,
+      "dependencies": false
+    }
+  ]
+}

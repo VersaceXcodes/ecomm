@@ -1,0 +1,15 @@
+{
+  "timestamp": 1756938583699,
+  "operation": {
+    "id": "backend:specifications:openapi"
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/backend/openapi.yaml",
+      "type": "text",
+      "size": 84486,
+      "dependencies": false
+    }
+  ]
+}

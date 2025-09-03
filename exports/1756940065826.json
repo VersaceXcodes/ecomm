@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756940065826,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_AddressBook",
+      "version": "latest"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/components/views/UV_AddressBook.tsx",
+      "type": "text",
+      "size": 28946,
+      "dependencies": false
+    }
+  ]
+}

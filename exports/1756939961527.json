@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756939961527,
+  "operation": {
+    "id": "webapp:react:root",
+    "refs": {
+      "id": "app",
+      "version": "latest"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/App.tsx",
+      "type": "text",
+      "size": 9945,
+      "dependencies": false
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756940062260,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_Landing",
+      "version": "latest"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/components/views/UV_Landing.tsx",
+      "type": "text",
+      "size": 24894,
+      "dependencies": false
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756940152390,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_FullCart",
+      "version": "latest"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/components/views/UV_FullCart.tsx",
+      "type": "text",
+      "size": 27165,
+      "dependencies": false
+    }
+  ]
+}

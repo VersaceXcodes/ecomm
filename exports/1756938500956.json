@@ -1,0 +1,15 @@
+{
+  "timestamp": 1756938500956,
+  "operation": {
+    "id": "backend:specifications:asyncapi"
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/backend/asyncapi.yaml",
+      "type": "text",
+      "size": 40608,
+      "dependencies": false
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756940044804,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_MobileMenu",
+      "version": "1756939965098"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/components/views/GV_MobileMenu.tsx",
+      "type": "text",
+      "size": 17089,
+      "dependencies": false
+    }
+  ]
+}

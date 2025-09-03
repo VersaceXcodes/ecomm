@@ -1,0 +1,15 @@
+{
+  "timestamp": 1756939911606,
+  "operation": {
+    "id": "settings:config:package"
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/backend/package.json",
+      "type": "text",
+      "size": 1455,
+      "dependencies": true
+    }
+  ]
+}

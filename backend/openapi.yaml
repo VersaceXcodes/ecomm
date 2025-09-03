@@ -1,0 +1,3183 @@
+openapi: 3.0.0
+info:
+  title: PerfumeShop E-Commerce API
+  description: Comprehensive API for PerfumeShop e-commerce web application
+  version: 1.0.0
+  contact:
+    name: PerfumeShop API Team
+    email: api@perfumeshop.com
+servers:
+  - url: http://localhost:3000
+    description: Development server
+security:
+  - BearerAuth: []
+  - {}
+paths:
+  /api/auth/register:
+    post:
+      summary: Register new user account
+      operationId: registerUser
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - first_name
+                - last_name
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+                password:
+                  type: string
+                  minLength: 1
+                first_name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                last_name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                phone:
+                  type: string
+                  maxLength: 50
+                  nullable: true
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+                  token:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /api/auth/login:
+    post:
+      summary: Authenticate user login
+      operationId: loginUser
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                remember_me:
+                  type: boolean
+                  default: false
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: "#/components/schemas/User"
+                  token:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/auth/logout:
+    post:
+      summary: Logout current user session
+      operationId: logoutUser
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/auth/me:
+    get:
+      summary: Get current authenticated user
+      operationId: getCurrentUser
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/auth/forgot-password:
+    post:
+      summary: Request password reset
+      operationId: forgotPassword
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Password reset email sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/auth/reset-password:
+    post:
+      summary: Reset password with token
+      operationId: resetPassword
+      tags:
+        - Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+                - password
+              properties:
+                token:
+                  type: string
+                password:
+                  type: string
+                  minLength: 1
+      responses:
+        "200":
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/products:
+    get:
+      summary: Get products list with filtering and search
+      operationId: getProducts
+      tags:
+        - Products
+      security: []
+      parameters:
+        - name: search_query
+          in: query
+          description: Search term for product name, brand, or fragrance notes
+          schema:
+            type: string
+        - name: category_id
+          in: query
+          description: Filter by category ID
+          schema:
+            type: string
+        - name: brand
+          in: query
+          description: Filter by brand name
+          schema:
+            type: string
+        - name: price_min
+          in: query
+          description: Minimum price filter
+          schema:
+            type: number
+            minimum: 0
+        - name: price_max
+          in: query
+          description: Maximum price filter
+          schema:
+            type: number
+            minimum: 0
+        - name: is_featured
+          in: query
+          description: Filter featured products only
+          schema:
+            type: boolean
+        - name: in_stock
+          in: query
+          description: Filter products in stock only
+          schema:
+            type: boolean
+        - name: sort_by
+          in: query
+          description: Sort products by field
+          schema:
+            type: string
+            enum:
+              - name
+              - price
+              - created_at
+              - view_count
+              - sales_count
+            default: created_at
+        - name: sort_order
+          in: query
+          description: Sort order direction
+          schema:
+            type: string
+            enum:
+              - asc
+              - desc
+            default: desc
+        - name: limit
+          in: query
+          description: Number of products per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 20
+            default: 20
+        - name: offset
+          in: query
+          description: Number of products to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Products list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProductWithImages"
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  has_more:
+                    type: boolean
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/products/{product_id}:
+    get:
+      summary: Get product details by ID
+      operationId: getProductById
+      tags:
+        - Products
+      security: []
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductDetailResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      summary: Increment product view count
+      operationId: incrementProductViews
+      tags:
+        - Products
+      security: []
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: View count updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  view_count:
+                    type: integer
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/categories:
+    get:
+      summary: Get all active categories
+      operationId: getCategories
+      tags:
+        - Categories
+      security: []
+      parameters:
+        - name: is_active
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+            default: true
+      responses:
+        "200":
+          description: Categories retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Category"
+  /api/cart:
+    get:
+      summary: Get current user cart items
+      operationId: getCartItems
+      tags:
+        - Cart
+      parameters:
+        - name: session_id
+          in: query
+          description: Session ID for guest users
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart items retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Add item to cart
+      operationId: addToCart
+      tags:
+        - Cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_id
+                - quantity
+              properties:
+                product_id:
+                  type: string
+                quantity:
+                  type: integer
+                  minimum: 1
+                session_id:
+                  type: string
+                  nullable: true
+      responses:
+        "201":
+          description: Item added to cart successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/cart/{cart_item_id}:
+    patch:
+      summary: Update cart item quantity
+      operationId: updateCartItem
+      tags:
+        - Cart
+      parameters:
+        - name: cart_item_id
+          in: path
+          required: true
+          description: Cart item unique identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - quantity
+              properties:
+                quantity:
+                  type: integer
+                  minimum: 1
+      responses:
+        "200":
+          description: Cart item updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Remove item from cart
+      operationId: removeCartItem
+      tags:
+        - Cart
+      parameters:
+        - name: cart_item_id
+          in: path
+          required: true
+          description: Cart item unique identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Item removed from cart successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CartResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/cart/clear:
+    delete:
+      summary: Clear all items from cart
+      operationId: clearCart
+      tags:
+        - Cart
+      parameters:
+        - name: session_id
+          in: query
+          description: Session ID for guest users
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart cleared successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /api/orders:
+    get:
+      summary: Get user order history
+      operationId: getUserOrders
+      tags:
+        - Orders
+      parameters:
+        - name: status
+          in: query
+          description: Filter by order status
+          schema:
+            type: string
+            enum:
+              - pending
+              - processing
+              - shipped
+              - delivered
+              - cancelled
+              - refunded
+        - name: limit
+          in: query
+          description: Number of orders per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: offset
+          in: query
+          description: Number of orders to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Order history retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/OrderWithItems"
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  has_more:
+                    type: boolean
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Create new order
+      operationId: createOrder
+      tags:
+        - Orders
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+      responses:
+        "201":
+          description: Order created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/orders/{order_id}:
+    get:
+      summary: Get order details by ID
+      operationId: getOrderById
+      tags:
+        - Orders
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          description: Order unique identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Order details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/user/profile:
+    get:
+      summary: Get user profile information
+      operationId: getUserProfile
+      tags:
+        - User Profile
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    patch:
+      summary: Update user profile information
+      operationId: updateUserProfile
+      tags:
+        - User Profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                last_name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                phone:
+                  type: string
+                  maxLength: 50
+                  nullable: true
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+      responses:
+        "200":
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/user/change-password:
+    post:
+      summary: Change user password
+      operationId: changeUserPassword
+      tags:
+        - User Profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - current_password
+                - new_password
+              properties:
+                current_password:
+                  type: string
+                new_password:
+                  type: string
+                  minLength: 1
+      responses:
+        "200":
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/user/addresses:
+    get:
+      summary: Get user addresses
+      operationId: getUserAddresses
+      tags:
+        - Addresses
+      parameters:
+        - name: type
+          in: query
+          description: Filter by address type
+          schema:
+            type: string
+            enum:
+              - shipping
+              - billing
+      responses:
+        "200":
+          description: Addresses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  addresses:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Address"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Create new address
+      operationId: createAddress
+      tags:
+        - Addresses
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAddressRequest"
+      responses:
+        "201":
+          description: Address created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/user/addresses/{address_id}:
+    get:
+      summary: Get address by ID
+      operationId: getAddressById
+      tags:
+        - Addresses
+      parameters:
+        - name: address_id
+          in: path
+          required: true
+          description: Address unique identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Address retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      summary: Update address
+      operationId: updateAddress
+      tags:
+        - Addresses
+      parameters:
+        - name: address_id
+          in: path
+          required: true
+          description: Address unique identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAddressRequest"
+      responses:
+        "200":
+          description: Address updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Delete address
+      operationId: deleteAddress
+      tags:
+        - Addresses
+      parameters:
+        - name: address_id
+          in: path
+          required: true
+          description: Address unique identifier
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Address deleted successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/user/addresses/{address_id}/set-default:
+    patch:
+      summary: Set address as default
+      operationId: setDefaultAddress
+      tags:
+        - Addresses
+      parameters:
+        - name: address_id
+          in: path
+          required: true
+          description: Address unique identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Default address updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/wishlist:
+    get:
+      summary: Get user wishlist items
+      operationId: getWishlistItems
+      tags:
+        - Wishlist
+      parameters:
+        - name: limit
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 50
+        - name: offset
+          in: query
+          description: Number of items to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Wishlist items retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/WishlistItemWithProduct"
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  has_more:
+                    type: boolean
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Add product to wishlist
+      operationId: addToWishlist
+      tags:
+        - Wishlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_id
+              properties:
+                product_id:
+                  type: string
+      responses:
+        "201":
+          description: Product added to wishlist successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WishlistItemWithProduct"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /api/wishlist/{wishlist_item_id}:
+    delete:
+      summary: Remove product from wishlist
+      operationId: removeFromWishlist
+      tags:
+        - Wishlist
+      parameters:
+        - name: wishlist_item_id
+          in: path
+          required: true
+          description: Wishlist item unique identifier
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Product removed from wishlist successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/wishlist/product/{product_id}:
+    delete:
+      summary: Remove product from wishlist by product ID
+      operationId: removeFromWishlistByProductId
+      tags:
+        - Wishlist
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Product removed from wishlist successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/products/{product_id}/reviews:
+    get:
+      summary: Get product reviews
+      operationId: getProductReviews
+      tags:
+        - Product Reviews
+      security: []
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+        - name: rating
+          in: query
+          description: Filter by rating
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 5
+        - name: is_verified_purchase
+          in: query
+          description: Filter by verified purchase status
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Number of reviews per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: offset
+          in: query
+          description: Number of reviews to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Product reviews retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviews:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProductReview"
+                  total:
+                    type: integer
+                  average_rating:
+                    type: number
+                  rating_breakdown:
+                    type: object
+                    properties:
+                      "1":
+                        type: integer
+                      "2":
+                        type: integer
+                      "3":
+                        type: integer
+                      "4":
+                        type: integer
+                      "5":
+                        type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  has_more:
+                    type: boolean
+        "404":
+          $ref: "#/components/responses/NotFound"
+    post:
+      summary: Create product review
+      operationId: createProductReview
+      tags:
+        - Product Reviews
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - rating
+              properties:
+                rating:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+                title:
+                  type: string
+                  maxLength: 500
+                  nullable: true
+                comment:
+                  type: string
+                  nullable: true
+                order_id:
+                  type: string
+                  nullable: true
+      responses:
+        "201":
+          description: Review created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductReview"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/shipping-methods:
+    get:
+      summary: Get available shipping methods
+      operationId: getShippingMethods
+      tags:
+        - Shipping
+      security: []
+      parameters:
+        - name: is_active
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+            default: true
+      responses:
+        "200":
+          description: Shipping methods retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shipping_methods:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ShippingMethod"
+  /api/promo-codes/validate:
+    post:
+      summary: Validate promo code
+      operationId: validatePromoCode
+      tags:
+        - Promo Codes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - code
+                - order_amount
+              properties:
+                code:
+                  type: string
+                order_amount:
+                  type: number
+                  minimum: 0
+      responses:
+        "200":
+          description: Promo code validated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  promo_code:
+                    $ref: "#/components/schemas/PromoCode"
+                  discount_amount:
+                    type: number
+                  final_amount:
+                    type: number
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/contact:
+    post:
+      summary: Submit contact form message
+      operationId: submitContactMessage
+      tags:
+        - Contact
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+                - subject
+                - message
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+                phone:
+                  type: string
+                  maxLength: 50
+                  nullable: true
+                subject:
+                  type: string
+                  minLength: 1
+                  maxLength: 500
+                message:
+                  type: string
+                  minLength: 1
+      responses:
+        "201":
+          description: Contact message submitted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  contact_message:
+                    $ref: "#/components/schemas/ContactMessage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/newsletter/subscribe:
+    post:
+      summary: Subscribe to newsletter
+      operationId: subscribeToNewsletter
+      tags:
+        - Newsletter
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  maxLength: 255
+      responses:
+        "201":
+          description: Newsletter subscription successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  subscription:
+                    $ref: "#/components/schemas/NewsletterSubscription"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /api/newsletter/unsubscribe:
+    post:
+      summary: Unsubscribe from newsletter
+      operationId: unsubscribeFromNewsletter
+      tags:
+        - Newsletter
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        "200":
+          description: Newsletter unsubscription successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "400":
+          $ref: "#/components/responses/BadRequest"
+  /api/admin/auth/login:
+    post:
+      summary: Authenticate admin login
+      operationId: loginAdmin
+      tags:
+        - Admin Authentication
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Admin login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  admin:
+                    $ref: "#/components/schemas/AdminUser"
+                  token:
+                    type: string
+                  expires_at:
+                    type: string
+                    format: date-time
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/admin/auth/me:
+    get:
+      summary: Get current authenticated admin
+      operationId: getCurrentAdmin
+      tags:
+        - Admin Authentication
+      responses:
+        "200":
+          description: Current admin information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminUser"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/admin/auth/logout:
+    post:
+      summary: Logout admin session
+      operationId: logoutAdmin
+      tags:
+        - Admin Authentication
+      responses:
+        "200":
+          description: Admin logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/admin/products:
+    get:
+      summary: Get all products for admin management
+      operationId: getAdminProducts
+      tags:
+        - Admin Products
+      parameters:
+        - name: search_query
+          in: query
+          description: Search term for product name or SKU
+          schema:
+            type: string
+        - name: is_active
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+        - name: is_featured
+          in: query
+          description: Filter by featured status
+          schema:
+            type: boolean
+        - name: category_id
+          in: query
+          description: Filter by category
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of products per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: offset
+          in: query
+          description: Number of products to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Admin products retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ProductWithImages"
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  has_more:
+                    type: boolean
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Create new product
+      operationId: createProduct
+      tags:
+        - Admin Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateProductRequest"
+      responses:
+        "201":
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductWithImages"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/admin/products/{product_id}:
+    get:
+      summary: Get product details for admin
+      operationId: getAdminProductById
+      tags:
+        - Admin Products
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Admin product details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductWithImages"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      summary: Update product
+      operationId: updateProduct
+      tags:
+        - Admin Products
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProductRequest"
+      responses:
+        "200":
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductWithImages"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Delete product
+      operationId: deleteProduct
+      tags:
+        - Admin Products
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Product deleted successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/admin/products/{product_id}/images:
+    post:
+      summary: Add product image
+      operationId: addProductImage
+      tags:
+        - Admin Products
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - image_url
+              properties:
+                image_url:
+                  type: string
+                  format: uri
+                  maxLength: 1000
+                alt_text:
+                  type: string
+                  maxLength: 500
+                  nullable: true
+                display_order:
+                  type: integer
+                  minimum: 0
+                  default: 0
+                is_primary:
+                  type: boolean
+                  default: false
+      responses:
+        "201":
+          description: Product image added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductImage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/admin/products/{product_id}/images/{image_id}:
+    patch:
+      summary: Update product image
+      operationId: updateProductImage
+      tags:
+        - Admin Products
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+        - name: image_id
+          in: path
+          required: true
+          description: Image unique identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                image_url:
+                  type: string
+                  format: uri
+                  maxLength: 1000
+                alt_text:
+                  type: string
+                  maxLength: 500
+                  nullable: true
+                display_order:
+                  type: integer
+                  minimum: 0
+                is_primary:
+                  type: boolean
+      responses:
+        "200":
+          description: Product image updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductImage"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Delete product image
+      operationId: deleteProductImage
+      tags:
+        - Admin Products
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+        - name: image_id
+          in: path
+          required: true
+          description: Image unique identifier
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Product image deleted successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/admin/orders:
+    get:
+      summary: Get all orders for admin management
+      operationId: getAdminOrders
+      tags:
+        - Admin Orders
+      parameters:
+        - name: status
+          in: query
+          description: Filter by order status
+          schema:
+            type: string
+            enum:
+              - pending
+              - processing
+              - shipped
+              - delivered
+              - cancelled
+              - refunded
+        - name: payment_status
+          in: query
+          description: Filter by payment status
+          schema:
+            type: string
+            enum:
+              - pending
+              - paid
+              - failed
+              - refunded
+        - name: search_query
+          in: query
+          description: Search by customer email or order number
+          schema:
+            type: string
+        - name: date_from
+          in: query
+          description: Filter orders from date
+          schema:
+            type: string
+            format: date
+        - name: date_to
+          in: query
+          description: Filter orders to date
+          schema:
+            type: string
+            format: date
+        - name: limit
+          in: query
+          description: Number of orders per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: offset
+          in: query
+          description: Number of orders to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Admin orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/OrderWithItems"
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  has_more:
+                    type: boolean
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/admin/orders/{order_id}:
+    get:
+      summary: Get order details for admin
+      operationId: getAdminOrderById
+      tags:
+        - Admin Orders
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          description: Order unique identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Admin order details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      summary: Update order status
+      operationId: updateOrderStatus
+      tags:
+        - Admin Orders
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          description: Order unique identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - pending
+                    - processing
+                    - shipped
+                    - delivered
+                    - cancelled
+                    - refunded
+                payment_status:
+                  type: string
+                  enum:
+                    - pending
+                    - paid
+                    - failed
+                    - refunded
+                tracking_number:
+                  type: string
+                  maxLength: 255
+                  nullable: true
+                estimated_delivery_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+                notes:
+                  type: string
+                  nullable: true
+      responses:
+        "200":
+          description: Order updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderWithItems"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/admin/customers:
+    get:
+      summary: Get all customers for admin management
+      operationId: getAdminCustomers
+      tags:
+        - Admin Customers
+      parameters:
+        - name: search_query
+          in: query
+          description: Search by customer name or email
+          schema:
+            type: string
+        - name: is_active
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+        - name: email_verified
+          in: query
+          description: Filter by email verification status
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Number of customers per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 20
+        - name: offset
+          in: query
+          description: Number of customers to skip
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        "200":
+          description: Admin customers retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customers:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+                  has_more:
+                    type: boolean
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/admin/customers/{user_id}:
+    get:
+      summary: Get customer details for admin
+      operationId: getAdminCustomerById
+      tags:
+        - Admin Customers
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User unique identifier
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Admin customer details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customer:
+                    $ref: "#/components/schemas/User"
+                  order_count:
+                    type: integer
+                  total_spent:
+                    type: number
+                  last_order_date:
+                    type: string
+                    format: date-time
+                    nullable: true
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    patch:
+      summary: Update customer status
+      operationId: updateCustomerStatus
+      tags:
+        - Admin Customers
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          description: User unique identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_active:
+                  type: boolean
+                email_verified:
+                  type: boolean
+      responses:
+        "200":
+          description: Customer updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/admin/inventory:
+    get:
+      summary: Get inventory status for all products
+      operationId: getInventoryStatus
+      tags:
+        - Admin Inventory
+      parameters:
+        - name: low_stock_threshold
+          in: query
+          description: Threshold for low stock alerts
+          schema:
+            type: integer
+            minimum: 0
+            default: 10
+      responses:
+        "200":
+          description: Inventory status retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  inventory:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: string
+                        product_name:
+                          type: string
+                        sku:
+                          type: string
+                        current_stock:
+                          type: integer
+                        is_low_stock:
+                          type: boolean
+                        last_restocked:
+                          type: string
+                          format: date-time
+                          nullable: true
+                  low_stock_count:
+                    type: integer
+                  out_of_stock_count:
+                    type: integer
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/admin/inventory/{product_id}/adjust:
+    post:
+      summary: Adjust product inventory
+      operationId: adjustInventory
+      tags:
+        - Admin Inventory
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          description: Product unique identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - adjustment_type
+                - quantity_change
+                - new_quantity
+              properties:
+                adjustment_type:
+                  type: string
+                  enum:
+                    - sale
+                    - restock
+                    - adjustment
+                    - damaged
+                    - expired
+                quantity_change:
+                  type: integer
+                new_quantity:
+                  type: integer
+                  minimum: 0
+                reason:
+                  type: string
+                  nullable: true
+      responses:
+        "200":
+          description: Inventory adjusted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  adjustment:
+                    $ref: "#/components/schemas/InventoryAdjustment"
+                  updated_product:
+                    type: object
+                    properties:
+                      product_id:
+                        type: string
+                      stock_quantity:
+                        type: integer
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+  /api/admin/categories:
+    get:
+      summary: Get all categories for admin management
+      operationId: getAdminCategories
+      tags:
+        - Admin Categories
+      parameters:
+        - name: is_active
+          in: query
+          description: Filter by active status
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Admin categories retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Category"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+    post:
+      summary: Create new category
+      operationId: createCategory
+      tags:
+        - Admin Categories
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                description:
+                  type: string
+                  nullable: true
+                display_order:
+                  type: integer
+                  minimum: 0
+                  default: 0
+      responses:
+        "201":
+          description: Category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+  /api/admin/categories/{category_id}:
+    patch:
+      summary: Update category
+      operationId: updateCategory
+      tags:
+        - Admin Categories
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          description: Category unique identifier
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                description:
+                  type: string
+                  nullable: true
+                display_order:
+                  type: integer
+                  minimum: 0
+                is_active:
+                  type: boolean
+      responses:
+        "200":
+          description: Category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+    delete:
+      summary: Delete category
+      operationId: deleteCategory
+      tags:
+        - Admin Categories
+      parameters:
+        - name: category_id
+          in: path
+          required: true
+          description: Category unique identifier
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Category deleted successfully
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    BadRequest:
+      description: Bad request - invalid input data
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+              details:
+                type: object
+    Unauthorized:
+      description: Unauthorized - authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+    Conflict:
+      description: Conflict - resource already exists
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              message:
+                type: string
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: string
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        email_verified:
+          type: boolean
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    AdminUser:
+      type: object
+      properties:
+        admin_id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+        permissions:
+          type: array
+          items:
+            type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Category:
+      type: object
+      properties:
+        category_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        display_order:
+          type: integer
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    Product:
+      type: object
+      properties:
+        product_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        price:
+          type: number
+        sale_price:
+          type: number
+          nullable: true
+        stock_quantity:
+          type: integer
+        sku:
+          type: string
+        brand:
+          type: string
+        fragrance_notes_top:
+          type: array
+          items:
+            type: string
+        fragrance_notes_middle:
+          type: array
+          items:
+            type: string
+        fragrance_notes_base:
+          type: array
+          items:
+            type: string
+        size_volume:
+          type: string
+        category_id:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+        is_featured:
+          type: boolean
+        meta_title:
+          type: string
+          nullable: true
+        meta_description:
+          type: string
+          nullable: true
+        view_count:
+          type: integer
+        sales_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ProductImage:
+      type: object
+      properties:
+        image_id:
+          type: string
+        product_id:
+          type: string
+        image_url:
+          type: string
+          format: uri
+        alt_text:
+          type: string
+          nullable: true
+        display_order:
+          type: integer
+        is_primary:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    ProductWithImages:
+      allOf:
+        - $ref: "#/components/schemas/Product"
+        - type: object
+          properties:
+            images:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProductImage"
+            primary_image:
+              $ref: "#/components/schemas/ProductImage"
+              nullable: true
+    ProductDetailResponse:
+      allOf:
+        - $ref: "#/components/schemas/ProductWithImages"
+        - type: object
+          properties:
+            category:
+              $ref: "#/components/schemas/Category"
+              nullable: true
+            related_products:
+              type: array
+              items:
+                $ref: "#/components/schemas/ProductWithImages"
+            average_rating:
+              type: number
+              nullable: true
+            review_count:
+              type: integer
+    Address:
+      type: object
+      properties:
+        address_id:
+          type: string
+        user_id:
+          type: string
+        type:
+          type: string
+          enum:
+            - shipping
+            - billing
+        first_name:
+          type: string
+        last_name:
+          type: string
+        street_address_1:
+          type: string
+        street_address_2:
+          type: string
+          nullable: true
+        city:
+          type: string
+        state_province:
+          type: string
+        postal_code:
+          type: string
+        country:
+          type: string
+        phone:
+          type: string
+          nullable: true
+        is_default:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CartItem:
+      type: object
+      properties:
+        cart_item_id:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        session_id:
+          type: string
+          nullable: true
+        product_id:
+          type: string
+        quantity:
+          type: integer
+        added_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CartItemWithProduct:
+      allOf:
+        - $ref: "#/components/schemas/CartItem"
+        - type: object
+          properties:
+            product:
+              $ref: "#/components/schemas/ProductWithImages"
+            line_total:
+              type: number
+    CartResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/CartItemWithProduct"
+        total_quantity:
+          type: integer
+        subtotal:
+          type: number
+        shipping_cost:
+          type: number
+        tax_amount:
+          type: number
+        total:
+          type: number
+    Order:
+      type: object
+      properties:
+        order_id:
+          type: string
+        order_number:
+          type: string
+        user_id:
+          type: string
+          nullable: true
+        guest_email:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum:
+            - pending
+            - processing
+            - shipped
+            - delivered
+            - cancelled
+            - refunded
+        subtotal:
+          type: number
+        shipping_cost:
+          type: number
+        tax_amount:
+          type: number
+        discount_amount:
+          type: number
+        total_amount:
+          type: number
+        currency:
+          type: string
+        payment_method:
+          type: string
+        payment_status:
+          type: string
+          enum:
+            - pending
+            - paid
+            - failed
+            - refunded
+        payment_transaction_id:
+          type: string
+          nullable: true
+        shipping_address_id:
+          type: string
+        billing_address_id:
+          type: string
+        shipping_method:
+          type: string
+        tracking_number:
+          type: string
+          nullable: true
+        estimated_delivery_date:
+          type: string
+          format: date-time
+          nullable: true
+        delivered_at:
+          type: string
+          format: date-time
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        promo_code:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    OrderItem:
+      type: object
+      properties:
+        order_item_id:
+          type: string
+        order_id:
+          type: string
+        product_id:
+          type: string
+        product_name:
+          type: string
+        product_brand:
+          type: string
+        product_sku:
+          type: string
+        product_image_url:
+          type: string
+          nullable: true
+        product_price:
+          type: number
+        sale_price:
+          type: number
+          nullable: true
+        quantity:
+          type: integer
+        line_total:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+    OrderWithItems:
+      allOf:
+        - $ref: "#/components/schemas/Order"
+        - type: object
+          properties:
+            order_items:
+              type: array
+              items:
+                $ref: "#/components/schemas/OrderItem"
+            shipping_address:
+              $ref: "#/components/schemas/Address"
+            billing_address:
+              $ref: "#/components/schemas/Address"
+    WishlistItem:
+      type: object
+      properties:
+        wishlist_item_id:
+          type: string
+        user_id:
+          type: string
+        product_id:
+          type: string
+        added_at:
+          type: string
+          format: date-time
+    WishlistItemWithProduct:
+      allOf:
+        - $ref: "#/components/schemas/WishlistItem"
+        - type: object
+          properties:
+            product:
+              $ref: "#/components/schemas/ProductWithImages"
+    ProductReview:
+      type: object
+      properties:
+        review_id:
+          type: string
+        product_id:
+          type: string
+        user_id:
+          type: string
+        order_id:
+          type: string
+          nullable: true
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        title:
+          type: string
+          nullable: true
+        comment:
+          type: string
+          nullable: true
+        is_verified_purchase:
+          type: boolean
+        is_approved:
+          type: boolean
+        admin_response:
+          type: string
+          nullable: true
+        helpful_votes:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    ShippingMethod:
+      type: object
+      properties:
+        shipping_method_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        cost:
+          type: number
+        estimated_days_min:
+          type: integer
+        estimated_days_max:
+          type: integer
+        is_active:
+          type: boolean
+        display_order:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+    PromoCode:
+      type: object
+      properties:
+        promo_code_id:
+          type: string
+        code:
+          type: string
+        description:
+          type: string
+          nullable: true
+        discount_type:
+          type: string
+          enum:
+            - percentage
+            - fixed
+            - shipping
+        discount_value:
+          type: number
+        minimum_order_amount:
+          type: number
+          nullable: true
+        maximum_discount_amount:
+          type: number
+          nullable: true
+        usage_limit:
+          type: integer
+          nullable: true
+        usage_count:
+          type: integer
+        starts_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    ContactMessage:
+      type: object
+      properties:
+        message_id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          nullable: true
+        subject:
+          type: string
+        message:
+          type: string
+        status:
+          type: string
+          enum:
+            - new
+            - pending
+            - resolved
+            - closed
+        admin_response:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    NewsletterSubscription:
+      type: object
+      properties:
+        subscription_id:
+          type: string
+        email:
+          type: string
+          format: email
+        is_active:
+          type: boolean
+        subscribed_at:
+          type: string
+          format: date-time
+        unsubscribed_at:
+          type: string
+          format: date-time
+          nullable: true
+    InventoryAdjustment:
+      type: object
+      properties:
+        adjustment_id:
+          type: string
+        product_id:
+          type: string
+        adjustment_type:
+          type: string
+          enum:
+            - sale
+            - restock
+            - adjustment
+            - damaged
+            - expired
+        quantity_change:
+          type: integer
+        old_quantity:
+          type: integer
+        new_quantity:
+          type: integer
+        reason:
+          type: string
+          nullable: true
+        admin_id:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    CreateOrderRequest:
+      type: object
+      required:
+        - order_number
+        - subtotal
+        - total_amount
+        - payment_method
+        - shipping_address_id
+        - billing_address_id
+        - shipping_method
+      properties:
+        order_number:
+          type: string
+          minLength: 1
+          maxLength: 255
+        user_id:
+          type: string
+          nullable: true
+        guest_email:
+          type: string
+          format: email
+          nullable: true
+        subtotal:
+          type: number
+          minimum: 0
+        shipping_cost:
+          type: number
+          minimum: 0
+          default: 0
+        tax_amount:
+          type: number
+          minimum: 0
+          default: 0
+        discount_amount:
+          type: number
+          minimum: 0
+          default: 0
+        total_amount:
+          type: number
+          minimum: 0
+        currency:
+          type: string
+          length: 3
+          default: USD
+        payment_method:
+          type: string
+          minLength: 1
+          maxLength: 100
+        shipping_address_id:
+          type: string
+        billing_address_id:
+          type: string
+        shipping_method:
+          type: string
+          minLength: 1
+          maxLength: 255
+        notes:
+          type: string
+          nullable: true
+        promo_code:
+          type: string
+          maxLength: 100
+          nullable: true
+        order_items:
+          type: array
+          items:
+            type: object
+            required:
+              - product_id
+              - product_name
+              - product_brand
+              - product_sku
+              - product_price
+              - quantity
+              - line_total
+            properties:
+              product_id:
+                type: string
+              product_name:
+                type: string
+                minLength: 1
+                maxLength: 255
+              product_brand:
+                type: string
+                minLength: 1
+                maxLength: 255
+              product_sku:
+                type: string
+                minLength: 1
+                maxLength: 255
+              product_image_url:
+                type: string
+                format: uri
+                maxLength: 1000
+                nullable: true
+              product_price:
+                type: number
+                minimum: 0
+              sale_price:
+                type: number
+                minimum: 0
+                nullable: true
+              quantity:
+                type: integer
+                minimum: 1
+              line_total:
+                type: number
+                minimum: 0
+    CreateAddressRequest:
+      type: object
+      required:
+        - type
+        - first_name
+        - last_name
+        - street_address_1
+        - city
+        - state_province
+        - postal_code
+        - country
+      properties:
+        type:
+          type: string
+          enum:
+            - shipping
+            - billing
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        street_address_1:
+          type: string
+          minLength: 1
+          maxLength: 500
+        street_address_2:
+          type: string
+          maxLength: 500
+          nullable: true
+        city:
+          type: string
+          minLength: 1
+          maxLength: 255
+        state_province:
+          type: string
+          minLength: 1
+          maxLength: 255
+        postal_code:
+          type: string
+          minLength: 1
+          maxLength: 50
+        country:
+          type: string
+          minLength: 1
+          maxLength: 255
+        phone:
+          type: string
+          maxLength: 50
+          nullable: true
+        is_default:
+          type: boolean
+          default: false
+    UpdateAddressRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - shipping
+            - billing
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        street_address_1:
+          type: string
+          minLength: 1
+          maxLength: 500
+        street_address_2:
+          type: string
+          maxLength: 500
+          nullable: true
+        city:
+          type: string
+          minLength: 1
+          maxLength: 255
+        state_province:
+          type: string
+          minLength: 1
+          maxLength: 255
+        postal_code:
+          type: string
+          minLength: 1
+          maxLength: 50
+        country:
+          type: string
+          minLength: 1
+          maxLength: 255
+        phone:
+          type: string
+          maxLength: 50
+          nullable: true
+        is_default:
+          type: boolean
+    CreateProductRequest:
+      type: object
+      required:
+        - name
+        - price
+        - sku
+        - brand
+        - size_volume
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        price:
+          type: number
+          minimum: 0
+        sale_price:
+          type: number
+          minimum: 0
+          nullable: true
+        stock_quantity:
+          type: integer
+          minimum: 0
+          default: 0
+        sku:
+          type: string
+          minLength: 1
+          maxLength: 255
+        brand:
+          type: string
+          minLength: 1
+          maxLength: 255
+        fragrance_notes_top:
+          type: array
+          items:
+            type: string
+          default: []
+        fragrance_notes_middle:
+          type: array
+          items:
+            type: string
+          default: []
+        fragrance_notes_base:
+          type: array
+          items:
+            type: string
+          default: []
+        size_volume:
+          type: string
+          minLength: 1
+          maxLength: 100
+        category_id:
+          type: string
+          nullable: true
+        meta_title:
+          type: string
+          maxLength: 500
+          nullable: true
+        meta_description:
+          type: string
+          nullable: true
+    UpdateProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        price:
+          type: number
+          minimum: 0
+        sale_price:
+          type: number
+          minimum: 0
+          nullable: true
+        stock_quantity:
+          type: integer
+          minimum: 0
+        sku:
+          type: string
+          minLength: 1
+          maxLength: 255
+        brand:
+          type: string
+          minLength: 1
+          maxLength: 255
+        fragrance_notes_top:
+          type: array
+          items:
+            type: string
+        fragrance_notes_middle:
+          type: array
+          items:
+            type: string
+        fragrance_notes_base:
+          type: array
+          items:
+            type: string
+        size_volume:
+          type: string
+          minLength: 1
+          maxLength: 100
+        category_id:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+        is_featured:
+          type: boolean
+        meta_title:
+          type: string
+          maxLength: 500
+          nullable: true
+        meta_description:
+          type: string
+          nullable: true
+tags:
+  - name: Authentication
+    description: User authentication and session management
+  - name: Products
+    description: Product catalog and details
+  - name: Categories
+    description: Product categories
+  - name: Cart
+    description: Shopping cart management
+  - name: Orders
+    description: Order management and history
+  - name: User Profile
+    description: User account management
+  - name: Addresses
+    description: User address management
+  - name: Wishlist
+    description: Product wishlist management
+  - name: Product Reviews
+    description: Product reviews and ratings
+  - name: Shipping
+    description: Shipping methods and options
+  - name: Promo Codes
+    description: Promotional codes and discounts
+  - name: Contact
+    description: Contact form and customer support
+  - name: Newsletter
+    description: Newsletter subscription management
+  - name: Admin Authentication
+    description: Admin authentication and session management
+  - name: Admin Products
+    description: Admin product management
+  - name: Admin Orders
+    description: Admin order management
+  - name: Admin Customers
+    description: Admin customer management
+  - name: Admin Inventory
+    description: Admin inventory management
+  - name: Admin Categories
+    description: Admin category management

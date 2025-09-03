@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756940045487,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_TopNavigation",
+      "version": "latest"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/components/views/GV_TopNavigation.tsx",
+      "type": "text",
+      "size": 19140,
+      "dependencies": false
+    }
+  ]
+}

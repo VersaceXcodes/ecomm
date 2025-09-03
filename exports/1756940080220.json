@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756940080220,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_AdminOrders",
+      "version": "latest"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/components/views/UV_AdminOrders.tsx",
+      "type": "text",
+      "size": 34496,
+      "dependencies": false
+    }
+  ]
+}

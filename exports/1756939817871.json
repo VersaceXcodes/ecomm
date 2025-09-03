@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756939817871,
+  "operation": {
+    "id": "webapp:react:store",
+    "refs": {
+      "id": "redux",
+      "version": "1756939748383"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/store/main.tsx",
+      "type": "text",
+      "size": 16193,
+      "dependencies": false
+    }
+  ]
+}

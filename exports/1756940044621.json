@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756940044621,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "GV_CartSidebar",
+      "version": "latest"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/components/views/GV_CartSidebar.tsx",
+      "type": "text",
+      "size": 17058,
+      "dependencies": false
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "timestamp": 1756939704771,
+  "operation": {
+    "id": "backend:server:main"
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/backend/server.ts",
+      "type": "text",
+      "size": 147199,
+      "dependencies": false
+    }
+  ]
+}

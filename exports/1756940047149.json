@@ -1,0 +1,19 @@
+{
+  "timestamp": 1756940047149,
+  "operation": {
+    "id": "webapp:react:views",
+    "refs": {
+      "id": "UV_OrderConfirmation",
+      "version": "latest"
+    }
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/vitereact/src/components/views/UV_OrderConfirmation.tsx",
+      "type": "text",
+      "size": 20161,
+      "dependencies": false
+    }
+  ]
+}

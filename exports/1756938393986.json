@@ -1,0 +1,15 @@
+{
+  "timestamp": 1756938393986,
+  "operation": {
+    "id": "db:schemas:zod"
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/backend/schema.ts",
+      "type": "text",
+      "size": 37339,
+      "dependencies": false
+    }
+  ]
+}

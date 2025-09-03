@@ -1,0 +1,21 @@
+{
+  "timestamp": 1756939909147,
+  "operation": {
+    "id": "backend:tests:main"
+  },
+  "projectId": "ecomm",
+  "files": [
+    {
+      "path": "/mnt/data/ecomm/backend/server.test.ts",
+      "type": "text",
+      "size": 54829,
+      "dependencies": false
+    },
+    {
+      "path": "/mnt/data/ecomm/backend/jest.config.ts",
+      "type": "text",
+      "size": 934,
+      "dependencies": false
+    }
+  ]
+}
