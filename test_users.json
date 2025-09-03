@@ -1,0 +1,75 @@
+{
+  "generated_at": "2025-09-03T22:00:00Z",
+  "user_structure": {
+    "table_name": "users",
+    "role_field": "role",
+    "registration_endpoint": "/api/auth/register",
+    "login_endpoint": "/api/auth/login"
+  },
+  "total_users": 4,
+  "verified_users": 4,
+  "users": [
+    {
+      "email": "admin@perfumeria.com",
+      "password": "admin123",
+      "role": "super_admin",
+      "name": "Super Admin",
+      "verified": true,
+      "token": "jwt_token_here"
+    },
+    {
+      "email": "manager@perfumeria.com",
+      "password": "manager123",
+      "role": "manager",
+      "name": "Manager User",
+      "verified": true,
+      "token": "jwt_token_here"
+    },
+    {
+      "email": "support@perfumeria.com",
+      "password": "support123",
+      "role": "support",
+      "name": "Support User",
+      "verified": true,
+      "token": "jwt_token_here"
+    },
+    {
+      "email": "john.doe@email.com",
+      "password": "password123",
+      "role": "customer",
+      "name": "John Doe",
+      "verified": true,
+      "token": "jwt_token_here"
+    }
+  ],
+  "by_role": {
+    "super_admin": [
+      {
+        "email": "admin@perfumeria.com",
+        "password": "admin123",
+        "verified": true
+      }
+    ],
+    "manager": [
+      {
+        "email": "manager@perfumeria.com",
+        "password": "manager123",
+        "verified": true
+      }
+    ],
+    "support": [
+      {
+        "email": "support@perfumeria.com",
+        "password": "support123",
+        "verified": true
+      }
+    ],
+    "customer": [
+      {
+        "email": "john.doe@email.com",
+        "password": "password123",
+        "verified": true
+      }
+    ]
+  }
+}
