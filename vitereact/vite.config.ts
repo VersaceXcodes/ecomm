@@ -35,7 +35,7 @@ export default defineConfig({
 	],
 	server: {
 		host: true,
-		allowedHosts: true,
+		allowedHosts: ["localhost"],
 	},
 	resolve: {
 		alias: {
