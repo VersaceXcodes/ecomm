@@ -146,7 +146,7 @@ const UV_AdminLogin: React.FC = () => {
     
     try {
       await adminLoginMutation.mutateAsync(adminCredentials);
-    } catch (error) {
+    } catch {
       // Error handling is done in mutation onError
     }
   };
@@ -164,7 +164,7 @@ const UV_AdminLogin: React.FC = () => {
         username: adminCredentials.username,
         code: twoFactorCode
       });
-    } catch (error) {
+    } catch {
       // Error handling is done in mutation onError
     }
   };

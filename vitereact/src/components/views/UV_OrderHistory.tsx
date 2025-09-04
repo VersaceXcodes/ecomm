@@ -102,8 +102,7 @@ const UV_OrderHistory: React.FC = () => {
   const {
     data: ordersData,
     isLoading: loadingOrders,
-    error: ordersError,
-    refetch: _refetchOrders
+    error: ordersError
   } = useQuery({
     queryKey: ['orders', filters, pagination.limit, pagination.offset],
     queryFn: async (): Promise<OrdersResponse> => {

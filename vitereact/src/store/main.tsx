@@ -258,7 +258,7 @@ export const useAppStore = create<AppState>()(
       },
       
       clear_authentication_state: () => {
-        set((_state) => ({
+        set(() => ({
           authentication_state: {
             current_user: null,
             auth_token: null,
@@ -318,7 +318,7 @@ export const useAppStore = create<AppState>()(
       },
       
       clear_cart_state: () => {
-        set((_state) => ({
+        set(() => ({
           cart_state: {
             items: [],
             total_quantity: 0,
@@ -445,7 +445,7 @@ export const useAppStore = create<AppState>()(
       },
       
       clear_product_filters: () => {
-        set((_state) => ({
+        set(() => ({
           product_filters: {
             search_query: '',
             price_min: null,
@@ -507,7 +507,7 @@ export const useAppStore = create<AppState>()(
       },
       
       clear_admin_state: () => {
-        set((_state) => ({
+        set(() => ({
           admin_state: {
             current_admin: null,
             admin_token: null,
@@ -519,13 +519,13 @@ export const useAppStore = create<AppState>()(
       
       // Session actions
       generate_session_id: () => {
-        set((_state) => ({
+        set(() => ({
           session_id: generateSessionId(),
         }));
       },
       
       set_session_id: (sessionId) => {
-        set((_state) => ({
+        set(() => ({
           session_id: sessionId,
         }));
       },

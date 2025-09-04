@@ -142,7 +142,7 @@ const UV_ProductListing: React.FC = () => {
   });
 
   // Fetch categories
-  const { data: categoriesData, isLoading: _loadingCategories } = useQuery<CategoriesResponse>({
+  const { data: categoriesData } = useQuery<CategoriesResponse>({
     queryKey: ['categories'],
     queryFn: async () => {
       const response = await axios.get(

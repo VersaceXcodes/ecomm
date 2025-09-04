@@ -83,8 +83,7 @@ const UV_CheckoutShipping: React.FC = () => {
   // Fetch user addresses (authenticated users only)
   const {
     data: addressesData,
-    isLoading: addressesLoading,
-    error: _addressesError
+    isLoading: addressesLoading
   } = useQuery({
     queryKey: ['user-addresses', 'shipping'],
     queryFn: async () => {

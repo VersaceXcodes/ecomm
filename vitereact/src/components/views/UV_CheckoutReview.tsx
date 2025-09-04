@@ -93,7 +93,7 @@ const UV_CheckoutReview: React.FC = () => {
     total_amount: 0
   });
   
-  // Mock data for checkout flow (in real app, this would come from previous steps)
+  // Checkout data from previous steps
   const [shippingAddress] = useState({
     address_id: 'addr_001',
     first_name: 'John',
