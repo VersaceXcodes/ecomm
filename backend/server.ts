@@ -3,10 +3,20 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Pool } from 'pg';
 import { v4 as uuidv4 } from 'uuid';
 import morgan from 'morgan';
+
+// Extend Express Request interface to include user and admin properties
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any;
+      admin?: any;
+    }
+  }
+}
 
 // Import Zod schemas
 import {
@@ -35,7 +45,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = parseInt(process.env.PORT || '3000');
 
 // Database connection
 const { DATABASE_URL, PGHOST, PGDATABASE, PGUSER, PGPASSWORD, PGPORT = 5432, JWT_SECRET = 'your-secret-key' } = process.env;
@@ -44,7 +54,7 @@ const pool = new Pool(
   DATABASE_URL
     ? { 
         connectionString: DATABASE_URL, 
-        ssl: { require: true } 
+        ssl: { rejectUnauthorized: false } 
       }
     : {
         host: PGHOST,
@@ -52,7 +62,7 @@ const pool = new Pool(
         user: PGUSER,
         password: PGPASSWORD,
         port: Number(PGPORT),
-        ssl: { require: true },
+        ssl: { rejectUnauthorized: false },
       }
 );
 
@@ -112,7 +122,7 @@ const authenticateToken = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
     const client = await pool.connect();
     
     try {
@@ -148,7 +158,7 @@ const authenticateAdmin = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
     const client = await pool.connect();
     
     try {
@@ -184,7 +194,7 @@ const optionalAuth = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
     const client = await pool.connect();
     
     try {
@@ -484,6 +494,19 @@ app.get('/api/products', async (req, res) => {
       offset = 0
     } = req.query;
 
+    // Type cast query parameters
+    const searchQuery = search_query as string;
+    const categoryId = category_id as string;
+    const brandFilter = brand as string;
+    const priceMin = price_min as string;
+    const priceMax = price_max as string;
+    const isFeatured = is_featured as string;
+    const inStock = in_stock as string;
+    const sortBy = sort_by as string;
+    const sortOrder = sort_order as string;
+    const limitNum = parseInt(limit as string) || 20;
+    const offsetNum = parseInt(offset as string) || 0;
+
     const client = await pool.connect();
     
     try {
@@ -505,7 +528,7 @@ app.get('/api/products', async (req, res) => {
       let paramCount = 0;
 
       // Add search functionality
-      if (search_query) {
+      if (searchQuery) {
         paramCount++;
         query += ` AND (
           p.name ILIKE $${paramCount} OR 
@@ -515,45 +538,45 @@ app.get('/api/products', async (req, res) => {
           array_to_string(p.fragrance_notes_middle, ' ') ILIKE $${paramCount} OR
           array_to_string(p.fragrance_notes_base, ' ') ILIKE $${paramCount}
         )`;
-        queryParams.push(`%${search_query}%`);
+        queryParams.push(`%${searchQuery}%`);
       }
 
       // Add category filter
-      if (category_id) {
+      if (categoryId) {
         paramCount++;
         query += ` AND p.category_id = $${paramCount}`;
-        queryParams.push(category_id);
+        queryParams.push(categoryId);
       }
 
       // Add brand filter
-      if (brand) {
+      if (brandFilter) {
         paramCount++;
         query += ` AND p.brand ILIKE $${paramCount}`;
-        queryParams.push(`%${brand}%`);
+        queryParams.push(`%${brandFilter}%`);
       }
 
       // Add price range filters
-      if (price_min) {
+      if (priceMin) {
         paramCount++;
         query += ` AND COALESCE(p.sale_price, p.price) >= $${paramCount}`;
-        queryParams.push(parseFloat(price_min));
+        queryParams.push(parseFloat(priceMin));
       }
 
-      if (price_max) {
+      if (priceMax) {
         paramCount++;
         query += ` AND COALESCE(p.sale_price, p.price) <= $${paramCount}`;
-        queryParams.push(parseFloat(price_max));
+        queryParams.push(parseFloat(priceMax));
       }
 
       // Add featured filter
-      if (is_featured !== undefined) {
+      if (isFeatured !== undefined) {
         paramCount++;
         query += ` AND p.is_featured = $${paramCount}`;
-        queryParams.push(is_featured === 'true');
+        queryParams.push(isFeatured === 'true');
       }
 
       // Add stock filter
-      if (in_stock !== undefined && in_stock === 'true') {
+      if (inStock !== undefined && inStock === 'true') {
         query += ` AND p.stock_quantity > 0`;
       }
 
@@ -563,24 +586,24 @@ app.get('/api/products', async (req, res) => {
       const validSortFields = ['name', 'price', 'created_at', 'view_count', 'sales_count'];
       const validSortOrders = ['asc', 'desc'];
       
-      if (validSortFields.includes(sort_by) && validSortOrders.includes(sort_order)) {
-        let sortField = sort_by;
-        if (sort_by === 'price') {
+      if (validSortFields.includes(sortBy) && validSortOrders.includes(sortOrder)) {
+        let sortField = sortBy;
+        if (sortBy === 'price') {
           sortField = 'COALESCE(p.sale_price, p.price)';
         } else {
-          sortField = `p.${sort_by}`;
+          sortField = `p.${sortBy}`;
         }
-        query += ` ORDER BY ${sortField} ${sort_order.toUpperCase()}`;
+        query += ` ORDER BY ${sortField} ${sortOrder.toUpperCase()}`;
       }
 
       // Add pagination
       paramCount++;
       query += ` LIMIT $${paramCount}`;
-      queryParams.push(parseInt(limit));
+      queryParams.push(limitNum.toString());
       
       paramCount++;
       query += ` OFFSET $${paramCount}`;
-      queryParams.push(parseInt(offset));
+      queryParams.push(offsetNum.toString());
 
       const result = await client.query(query, queryParams);
 
@@ -595,7 +618,7 @@ app.get('/api/products', async (req, res) => {
       let countParamIndex = 0;
 
       // Apply same filters for count
-      if (search_query) {
+      if (searchQuery) {
         countParamIndex++;
         countQuery += ` AND (
           p.name ILIKE $${countParamIndex} OR 
@@ -605,40 +628,40 @@ app.get('/api/products', async (req, res) => {
           array_to_string(p.fragrance_notes_middle, ' ') ILIKE $${countParamIndex} OR
           array_to_string(p.fragrance_notes_base, ' ') ILIKE $${countParamIndex}
         )`;
-        countParams.push(`%${search_query}%`);
+        countParams.push(`%${searchQuery}%`);
       }
 
-      if (category_id) {
+      if (categoryId) {
         countParamIndex++;
         countQuery += ` AND p.category_id = $${countParamIndex}`;
-        countParams.push(category_id);
+        countParams.push(categoryId);
       }
 
-      if (brand) {
+      if (brandFilter) {
         countParamIndex++;
         countQuery += ` AND p.brand ILIKE $${countParamIndex}`;
-        countParams.push(`%${brand}%`);
+        countParams.push(`%${brandFilter}%`);
       }
 
-      if (price_min) {
+      if (priceMin) {
         countParamIndex++;
         countQuery += ` AND COALESCE(p.sale_price, p.price) >= $${countParamIndex}`;
-        countParams.push(parseFloat(price_min));
+        countParams.push(parseFloat(priceMin));
       }
 
-      if (price_max) {
+      if (priceMax) {
         countParamIndex++;
         countQuery += ` AND COALESCE(p.sale_price, p.price) <= $${countParamIndex}`;
-        countParams.push(parseFloat(price_max));
+        countParams.push(parseFloat(priceMax));
       }
 
-      if (is_featured !== undefined) {
+      if (isFeatured !== undefined) {
         countParamIndex++;
         countQuery += ` AND p.is_featured = $${countParamIndex}`;
-        countParams.push(is_featured === 'true');
+        countParams.push(isFeatured === 'true');
       }
 
-      if (in_stock !== undefined && in_stock === 'true') {
+      if (inStock !== undefined && inStock === 'true') {
         countQuery += ` AND p.stock_quantity > 0`;
       }
 
@@ -648,9 +671,9 @@ app.get('/api/products', async (req, res) => {
       res.json({
         products: result.rows,
         total,
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        has_more: offset + limit < total
+        limit: limitNum,
+        offset: offsetNum,
+        has_more: offsetNum + limitNum < total
       });
     } finally {
       client.release();
@@ -1277,6 +1300,11 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
     const { status, limit = 20, offset = 0 } = req.query;
     const userId = req.user.user_id;
 
+    // Type cast query parameters
+    const statusFilter = status as string;
+    const limitNum = parseInt(limit as string) || 20;
+    const offsetNum = parseInt(offset as string) || 0;
+
     const client = await pool.connect();
     
     try {
@@ -1302,21 +1330,21 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
       const queryParams = [userId];
       let paramCount = 1;
 
-      if (status) {
+      if (statusFilter) {
         paramCount++;
         query += ` AND o.status = $${paramCount}`;
-        queryParams.push(status);
+        queryParams.push(statusFilter);
       }
 
       query += ` GROUP BY o.order_id ORDER BY o.created_at DESC`;
       
       paramCount++;
       query += ` LIMIT $${paramCount}`;
-      queryParams.push(parseInt(limit));
+      queryParams.push(limitNum.toString());
       
       paramCount++;
       query += ` OFFSET $${paramCount}`;
-      queryParams.push(parseInt(offset));
+      queryParams.push(offsetNum.toString());
 
       const result = await client.query(query, queryParams);
 
@@ -1324,9 +1352,9 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
       let countQuery = 'SELECT COUNT(*) as total FROM orders WHERE user_id = $1';
       const countParams = [userId];
       
-      if (status) {
+      if (statusFilter) {
         countQuery += ' AND status = $2';
-        countParams.push(status);
+        countParams.push(statusFilter);
       }
 
       const countResult = await client.query(countQuery, countParams);
@@ -1335,9 +1363,9 @@ app.get('/api/orders', authenticateToken, async (req, res) => {
       res.json({
         orders: result.rows,
         total,
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        has_more: offset + limit < total
+        limit: limitNum,
+        offset: offsetNum,
+        has_more: offsetNum + limitNum < total
       });
     } finally {
       client.release();
@@ -1368,7 +1396,7 @@ app.post('/api/orders', optionalAuth, async (req, res) => {
       const now = new Date().toISOString();
 
       // Validate and process cart items
-      const cartItems = validatedData.order_items;
+      const cartItems = req.body.order_items;
       let calculatedSubtotal = 0;
 
       // Validate each item and check inventory
@@ -2078,6 +2106,10 @@ app.get('/api/wishlist', authenticateToken, async (req, res) => {
     const { limit = 50, offset = 0 } = req.query;
     const userId = req.user.user_id;
 
+    // Type cast query parameters
+    const limitNum = parseInt(limit as string) || 50;
+    const offsetNum = parseInt(offset as string) || 0;
+
     const client = await pool.connect();
     
     try {
@@ -2093,7 +2125,7 @@ app.get('/api/wishlist', authenticateToken, async (req, res) => {
         LIMIT $2 OFFSET $3
       `;
 
-      const result = await client.query(query, [userId, parseInt(limit), parseInt(offset)]);
+      const result = await client.query(query, [userId, limitNum, offsetNum]);
 
       // Get total count
       const countResult = await client.query(
@@ -2126,9 +2158,9 @@ app.get('/api/wishlist', authenticateToken, async (req, res) => {
       res.json({
         items,
         total,
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        has_more: offset + limit < total
+        limit: limitNum,
+        offset: offsetNum,
+        has_more: offsetNum + limitNum < total
       });
     } finally {
       client.release();
@@ -2298,6 +2330,12 @@ app.get('/api/products/:product_id/reviews', async (req, res) => {
     const { product_id } = req.params;
     const { rating, is_verified_purchase, limit = 20, offset = 0 } = req.query;
 
+    // Type cast query parameters
+    const ratingFilter = rating ? parseInt(rating as string) : undefined;
+    const isVerifiedPurchase = is_verified_purchase as string;
+    const limitNum = parseInt(limit as string) || 20;
+    const offsetNum = parseInt(offset as string) || 0;
+
     const client = await pool.connect();
     
     try {
@@ -2321,27 +2359,27 @@ app.get('/api/products/:product_id/reviews', async (req, res) => {
       const queryParams = [product_id];
       let paramCount = 1;
 
-      if (rating) {
+      if (ratingFilter) {
         paramCount++;
         query += ` AND pr.rating = $${paramCount}`;
-        queryParams.push(parseInt(rating));
+        queryParams.push(ratingFilter.toString());
       }
 
-      if (is_verified_purchase !== undefined) {
+      if (isVerifiedPurchase !== undefined) {
         paramCount++;
         query += ` AND pr.is_verified_purchase = $${paramCount}`;
-        queryParams.push(is_verified_purchase === 'true');
+        queryParams.push((isVerifiedPurchase === 'true').toString());
       }
 
       query += ` ORDER BY pr.created_at DESC`;
       
       paramCount++;
       query += ` LIMIT $${paramCount}`;
-      queryParams.push(parseInt(limit));
+      queryParams.push(limitNum.toString());
       
       paramCount++;
       query += ` OFFSET $${paramCount}`;
-      queryParams.push(parseInt(offset));
+      queryParams.push(offsetNum.toString());
 
       const result = await client.query(query, queryParams);
 
@@ -2378,9 +2416,9 @@ app.get('/api/products/:product_id/reviews', async (req, res) => {
           4: parseInt(stats.rating_4_count),
           5: parseInt(stats.rating_5_count)
         },
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        has_more: offset + limit < parseInt(stats.total_reviews)
+        limit: limitNum,
+        offset: offsetNum,
+        has_more: offsetNum + limitNum < parseInt(stats.total_reviews)
       });
     } finally {
       client.release();
@@ -2887,6 +2925,14 @@ app.get('/api/admin/products', authenticateAdmin, async (req, res) => {
       offset = 0
     } = req.query;
 
+    // Type cast query parameters
+    const searchQuery = search_query as string;
+    const isActive = is_active as string;
+    const isFeatured = is_featured as string;
+    const categoryId = category_id as string;
+    const limitNum = parseInt(limit as string) || 20;
+    const offsetNum = parseInt(offset as string) || 0;
+
     const client = await pool.connect();
     
     try {
@@ -2907,39 +2953,39 @@ app.get('/api/admin/products', authenticateAdmin, async (req, res) => {
       const queryParams = [];
       let paramCount = 0;
 
-      if (search_query) {
+      if (searchQuery) {
         paramCount++;
         query += ` AND (p.name ILIKE $${paramCount} OR p.sku ILIKE $${paramCount} OR p.brand ILIKE $${paramCount})`;
-        queryParams.push(`%${search_query}%`);
+        queryParams.push(`%${searchQuery}%`);
       }
 
-      if (is_active !== undefined) {
+      if (isActive !== undefined) {
         paramCount++;
         query += ` AND p.is_active = $${paramCount}`;
-        queryParams.push(is_active === 'true');
+        queryParams.push(isActive === 'true');
       }
 
-      if (is_featured !== undefined) {
+      if (isFeatured !== undefined) {
         paramCount++;
         query += ` AND p.is_featured = $${paramCount}`;
-        queryParams.push(is_featured === 'true');
+        queryParams.push(isFeatured === 'true');
       }
 
-      if (category_id) {
+      if (categoryId) {
         paramCount++;
         query += ` AND p.category_id = $${paramCount}`;
-        queryParams.push(category_id);
+        queryParams.push(categoryId);
       }
 
       query += ` GROUP BY p.product_id ORDER BY p.created_at DESC`;
       
       paramCount++;
       query += ` LIMIT $${paramCount}`;
-      queryParams.push(parseInt(limit));
+      queryParams.push(limitNum.toString());
       
       paramCount++;
       query += ` OFFSET $${paramCount}`;
-      queryParams.push(parseInt(offset));
+      queryParams.push(offsetNum.toString());
 
       const result = await client.query(query, queryParams);
 
@@ -2978,9 +3024,9 @@ app.get('/api/admin/products', authenticateAdmin, async (req, res) => {
       res.json({
         products: result.rows,
         total,
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        has_more: offset + limit < total
+        limit: limitNum,
+        offset: offsetNum,
+        has_more: offsetNum + limitNum < total
       });
     } finally {
       client.release();
@@ -3524,6 +3570,15 @@ app.get('/api/admin/orders', authenticateAdmin, async (req, res) => {
       offset = 0
     } = req.query;
 
+    // Type cast query parameters
+    const statusFilter = status as string;
+    const paymentStatusFilter = payment_status as string;
+    const searchQuery = search_query as string;
+    const dateFrom = date_from as string;
+    const dateTo = date_to as string;
+    const limitNum = parseInt(limit as string) || 20;
+    const offsetNum = parseInt(offset as string) || 0;
+
     const client = await pool.connect();
     
     try {
@@ -3549,45 +3604,45 @@ app.get('/api/admin/orders', authenticateAdmin, async (req, res) => {
       const queryParams = [];
       let paramCount = 0;
 
-      if (status) {
+      if (statusFilter) {
         paramCount++;
         query += ` AND o.status = $${paramCount}`;
-        queryParams.push(status);
+        queryParams.push(statusFilter);
       }
 
-      if (payment_status) {
+      if (paymentStatusFilter) {
         paramCount++;
         query += ` AND o.payment_status = $${paramCount}`;
-        queryParams.push(payment_status);
+        queryParams.push(paymentStatusFilter);
       }
 
-      if (search_query) {
+      if (searchQuery) {
         paramCount++;
         query += ` AND (o.order_number ILIKE $${paramCount} OR o.guest_email ILIKE $${paramCount})`;
-        queryParams.push(`%${search_query}%`);
+        queryParams.push(`%${searchQuery}%`);
       }
 
-      if (date_from) {
+      if (dateFrom) {
         paramCount++;
         query += ` AND o.created_at >= $${paramCount}`;
-        queryParams.push(date_from);
+        queryParams.push(dateFrom);
       }
 
-      if (date_to) {
+      if (dateTo) {
         paramCount++;
         query += ` AND o.created_at <= $${paramCount}`;
-        queryParams.push(date_to);
+        queryParams.push(dateTo);
       }
 
       query += ` GROUP BY o.order_id ORDER BY o.created_at DESC`;
       
       paramCount++;
       query += ` LIMIT $${paramCount}`;
-      queryParams.push(parseInt(limit));
+      queryParams.push(limitNum.toString());
       
       paramCount++;
       query += ` OFFSET $${paramCount}`;
-      queryParams.push(parseInt(offset));
+      queryParams.push(offsetNum.toString());
 
       const result = await client.query(query, queryParams);
 
@@ -3632,9 +3687,9 @@ app.get('/api/admin/orders', authenticateAdmin, async (req, res) => {
       res.json({
         orders: result.rows,
         total,
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        has_more: offset + limit < total
+        limit: limitNum,
+        offset: offsetNum,
+        has_more: offsetNum + limitNum < total
       });
     } finally {
       client.release();
@@ -3885,6 +3940,13 @@ app.get('/api/admin/customers', authenticateAdmin, async (req, res) => {
       offset = 0
     } = req.query;
 
+    // Type cast query parameters
+    const searchQuery = search_query as string;
+    const isActive = is_active as string;
+    const emailVerified = email_verified as string;
+    const limitNum = parseInt(limit as string) || 20;
+    const offsetNum = parseInt(offset as string) || 0;
+
     const client = await pool.connect();
     
     try {
@@ -3892,33 +3954,33 @@ app.get('/api/admin/customers', authenticateAdmin, async (req, res) => {
       const queryParams = [];
       let paramCount = 0;
 
-      if (search_query) {
+      if (searchQuery) {
         paramCount++;
         query += ` AND (first_name ILIKE $${paramCount} OR last_name ILIKE $${paramCount} OR email ILIKE $${paramCount})`;
-        queryParams.push(`%${search_query}%`);
+        queryParams.push(`%${searchQuery}%`);
       }
 
-      if (is_active !== undefined) {
+      if (isActive !== undefined) {
         paramCount++;
         query += ` AND is_active = $${paramCount}`;
-        queryParams.push(is_active === 'true');
+        queryParams.push(isActive === 'true');
       }
 
-      if (email_verified !== undefined) {
+      if (emailVerified !== undefined) {
         paramCount++;
         query += ` AND email_verified = $${paramCount}`;
-        queryParams.push(email_verified === 'true');
+        queryParams.push(emailVerified === 'true');
       }
 
       query += ` ORDER BY created_at DESC`;
       
       paramCount++;
       query += ` LIMIT $${paramCount}`;
-      queryParams.push(parseInt(limit));
+      queryParams.push(limitNum.toString());
       
       paramCount++;
       query += ` OFFSET $${paramCount}`;
-      queryParams.push(parseInt(offset));
+      queryParams.push(offsetNum.toString());
 
       const result = await client.query(query, queryParams);
 
@@ -3951,9 +4013,9 @@ app.get('/api/admin/customers', authenticateAdmin, async (req, res) => {
       res.json({
         customers: result.rows,
         total,
-        limit: parseInt(limit),
-        offset: parseInt(offset),
-        has_more: offset + limit < total
+        limit: limitNum,
+        offset: offsetNum,
+        has_more: offsetNum + limitNum < total
       });
     } finally {
       client.release();
@@ -4089,6 +4151,7 @@ app.patch('/api/admin/customers/:user_id', authenticateAdmin, async (req, res) =
 app.get('/api/admin/inventory', authenticateAdmin, async (req, res) => {
   try {
     const { low_stock_threshold = 10 } = req.query;
+    const threshold = parseInt(low_stock_threshold as string) || 10;
 
     const client = await pool.connect();
     
@@ -4111,7 +4174,7 @@ app.get('/api/admin/inventory', authenticateAdmin, async (req, res) => {
         ) ia ON true
         WHERE p.is_active = true
         ORDER BY p.stock_quantity ASC, p.name ASC
-      `, [parseInt(low_stock_threshold)]);
+      `, [threshold]);
 
       const inventory = result.rows;
       const lowStockCount = inventory.filter(item => item.is_low_stock).length;
