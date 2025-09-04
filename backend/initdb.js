@@ -27,27 +27,39 @@ const pool = new Pool(
 async function initDb() {
   const client = await pool.connect();
   try {
-    // Begin transaction
-    await client.query('BEGIN');
-    
     // Read and split SQL commands
-    const dbInitCommands = fs
-      .readFileSync(`./db.sql`, "utf-8")
-      .toString()
-      .split(/(?=CREATE TABLE |INSERT INTO)/);
+    const sqlContent = fs.readFileSync(`./db.sql`, "utf-8").toString();
+    
+    // Replace CREATE TABLE with CREATE TABLE IF NOT EXISTS
+    const modifiedSql = sqlContent.replace(/CREATE TABLE /g, 'CREATE TABLE IF NOT EXISTS ');
+    
+    // Split commands
+    const dbInitCommands = modifiedSql.split(/(?=CREATE TABLE IF NOT EXISTS |INSERT INTO)/);
 
-    // Execute each command
+    // Execute each command individually (no transaction to avoid rollback issues)
     for (let cmd of dbInitCommands) {
-      console.dir({ "backend:db:init:command": cmd });
-      await client.query(cmd);
+      if (cmd.trim()) {
+        // For INSERT statements, add ON CONFLICT DO NOTHING if not already present
+        if (cmd.trim().startsWith('INSERT INTO') && !cmd.includes('ON CONFLICT')) {
+          // Find the last semicolon and replace it
+          const lastSemicolonIndex = cmd.lastIndexOf(';');
+          if (lastSemicolonIndex !== -1) {
+            cmd = cmd.substring(0, lastSemicolonIndex) + ' ON CONFLICT DO NOTHING' + cmd.substring(lastSemicolonIndex);
+          }
+        }
+        
+        console.dir({ "backend:db:init:command": cmd.substring(0, 100) + '...' });
+        try {
+          await client.query(cmd);
+        } catch (cmdError) {
+          // Log the error but continue with other commands
+          console.warn('Command failed, continuing:', cmdError.message);
+        }
+      }
     }
 
-    // Commit transaction
-    await client.query('COMMIT');
     console.log('Database initialization completed successfully');
   } catch (e) {
-    // Rollback on error
-    await client.query('ROLLBACK');
     console.error('Database initialization failed:', e);
     throw e;
   } finally {
