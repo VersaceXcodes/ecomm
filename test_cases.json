@@ -1,0 +1,450 @@
+{
+  "generated_at": "2025-01-04T00:00:00Z",
+  "application_name": "Perfume E-commerce Application",
+  "test_environment": {
+    "frontend_url": "http://localhost:5174",
+    "backend_url": "http://localhost:3001",
+    "database": "PostgreSQL (Neon Cloud)"
+  },
+  "total_test_cases": 25,
+  "testCases": [
+    {
+      "id": "functional-app-test",
+      "name": "Functional Application Test",
+      "category": "functionality",
+      "priority": "high",
+      "description": "Verify the application has actual functionality beyond basic placeholder",
+      "steps": [
+        "Navigate to application at http://localhost:5174",
+        "Verify multiple interactive elements exist (buttons, forms, links)",
+        "Check for proper navigation structure with header and footer",
+        "Verify application shows perfume e-commerce content, not 'Vite + React' text",
+        "Confirm product listings are visible on homepage"
+      ],
+      "expectedOutcome": "Application shows functional e-commerce features with perfume products",
+      "failureCondition": "If page only shows 'Vite + React' placeholder, this test should FAIL"
+    },
+    {
+      "id": "ui-components-test", 
+      "name": "UI Components Test",
+      "category": "interface",
+      "priority": "high",
+      "description": "Test that UI components are properly implemented",
+      "steps": [
+        "Check for navigation menu with product categories",
+        "Verify search functionality in header",
+        "Look for shopping cart icon and functionality",
+        "Test mobile menu toggle on smaller screens",
+        "Verify footer with company information and links"
+      ],
+      "expectedOutcome": "All major UI components are present and functional"
+    },
+    {
+      "id": "content-quality-test",
+      "name": "Content Quality Test", 
+      "category": "content",
+      "priority": "high",
+      "description": "Verify application has meaningful e-commerce content",
+      "steps": [
+        "Check homepage displays featured perfume products",
+        "Verify product cards show images, names, prices",
+        "Look for proper branding and professional design",
+        "Ensure content is relevant to perfume/fragrance industry",
+        "Verify no lorem ipsum or placeholder text"
+      ],
+      "expectedOutcome": "Application demonstrates real perfume e-commerce functionality"
+    },
+    {
+      "id": "user-registration-test",
+      "name": "User Registration Test",
+      "category": "authentication",
+      "priority": "high",
+      "description": "Test user account creation functionality",
+      "steps": [
+        "Navigate to registration page (/register)",
+        "Fill out registration form with valid data",
+        "Submit form and verify success response",
+        "Check that user is automatically logged in",
+        "Verify user profile information is saved"
+      ],
+      "expectedOutcome": "New user account created successfully with automatic login",
+      "testData": {
+        "email": "newuser@test.com",
+        "password": "newpass123",
+        "first_name": "New",
+        "last_name": "User",
+        "phone": "+1-555-9999"
+      }
+    },
+    {
+      "id": "user-login-test",
+      "name": "User Login Test",
+      "category": "authentication", 
+      "priority": "high",
+      "description": "Test user authentication with existing credentials",
+      "steps": [
+        "Navigate to login page (/login)",
+        "Enter valid user credentials",
+        "Submit login form",
+        "Verify successful authentication and redirect",
+        "Check that user session is maintained"
+      ],
+      "expectedOutcome": "User successfully logs in and gains access to protected features",
+      "testData": {
+        "email": "john.doe@email.com",
+        "password": "password123"
+      }
+    },
+    {
+      "id": "admin-login-test",
+      "name": "Admin Login Test",
+      "category": "authentication",
+      "priority": "high", 
+      "description": "Test admin authentication and access to admin panel",
+      "steps": [
+        "Navigate to admin login page (/admin/login)",
+        "Enter admin credentials",
+        "Submit login form",
+        "Verify access to admin dashboard",
+        "Check admin-specific navigation and features"
+      ],
+      "expectedOutcome": "Admin successfully logs in and accesses admin panel",
+      "testData": {
+        "email": "admin@perfumeria.com",
+        "password": "admin123"
+      }
+    },
+    {
+      "id": "product-listing-test",
+      "name": "Product Listing Test",
+      "category": "products",
+      "priority": "high",
+      "description": "Test product catalog display and functionality",
+      "steps": [
+        "Navigate to products page (/products)",
+        "Verify products are displayed in grid layout",
+        "Check product cards show image, name, price, brand",
+        "Test product filtering by category",
+        "Verify search functionality works",
+        "Test sorting options (price, name, popularity)"
+      ],
+      "expectedOutcome": "Product catalog displays correctly with working filters and search"
+    },
+    {
+      "id": "product-detail-test",
+      "name": "Product Detail Test", 
+      "category": "products",
+      "priority": "high",
+      "description": "Test individual product page functionality",
+      "steps": [
+        "Click on a product from the listing page",
+        "Verify product detail page loads with complete information",
+        "Check product images, description, price, and specifications",
+        "Test 'Add to Cart' functionality",
+        "Verify related products are shown",
+        "Check product reviews section"
+      ],
+      "expectedOutcome": "Product detail page shows comprehensive information and allows adding to cart"
+    },
+    {
+      "id": "shopping-cart-test",
+      "name": "Shopping Cart Test",
+      "category": "cart",
+      "priority": "high",
+      "description": "Test shopping cart functionality and persistence",
+      "steps": [
+        "Add multiple products to cart from different pages",
+        "Open cart sidebar and verify items are listed",
+        "Test quantity adjustment for cart items",
+        "Verify cart totals calculate correctly",
+        "Test item removal from cart",
+        "Check cart persistence across page refreshes"
+      ],
+      "expectedOutcome": "Shopping cart works correctly with proper calculations and persistence"
+    },
+    {
+      "id": "checkout-process-test",
+      "name": "Checkout Process Test",
+      "category": "checkout",
+      "priority": "high",
+      "description": "Test complete checkout flow for authenticated users",
+      "steps": [
+        "Add items to cart and proceed to checkout",
+        "Fill in shipping address information",
+        "Select shipping method",
+        "Enter payment information",
+        "Review order details",
+        "Complete order placement",
+        "Verify order confirmation page"
+      ],
+      "expectedOutcome": "Complete checkout process works from cart to order confirmation",
+      "prerequisites": "User must be logged in"
+    },
+    {
+      "id": "guest-checkout-test",
+      "name": "Guest Checkout Test",
+      "category": "checkout",
+      "priority": "medium",
+      "description": "Test checkout process for guest users",
+      "steps": [
+        "Add items to cart without logging in",
+        "Proceed to checkout as guest",
+        "Fill in guest email and shipping information",
+        "Complete checkout process",
+        "Verify order can be placed without account"
+      ],
+      "expectedOutcome": "Guest users can complete purchases without creating accounts"
+    },
+    {
+      "id": "order-history-test",
+      "name": "Order History Test",
+      "category": "orders",
+      "priority": "medium",
+      "description": "Test order history display for logged-in users",
+      "steps": [
+        "Log in as user with existing orders",
+        "Navigate to order history page (/account/orders)",
+        "Verify past orders are displayed",
+        "Check order details, status, and items",
+        "Test order detail view functionality"
+      ],
+      "expectedOutcome": "Order history displays correctly with complete order information",
+      "testData": {
+        "email": "john.doe@email.com",
+        "password": "password123"
+      }
+    },
+    {
+      "id": "user-profile-test",
+      "name": "User Profile Management Test",
+      "category": "profile",
+      "priority": "medium",
+      "description": "Test user profile viewing and editing",
+      "steps": [
+        "Log in and navigate to user dashboard (/account)",
+        "View current profile information",
+        "Edit profile details (name, phone, email)",
+        "Save changes and verify updates",
+        "Test password change functionality"
+      ],
+      "expectedOutcome": "User can view and update profile information successfully"
+    },
+    {
+      "id": "address-management-test",
+      "name": "Address Management Test",
+      "category": "profile",
+      "priority": "medium", 
+      "description": "Test shipping and billing address management",
+      "steps": [
+        "Navigate to address book (/account/addresses)",
+        "Add new shipping address",
+        "Add new billing address",
+        "Edit existing address",
+        "Set default addresses",
+        "Delete address"
+      ],
+      "expectedOutcome": "Address management works correctly with CRUD operations"
+    },
+    {
+      "id": "wishlist-test",
+      "name": "Wishlist Functionality Test",
+      "category": "wishlist",
+      "priority": "medium",
+      "description": "Test product wishlist features",
+      "steps": [
+        "Add products to wishlist from product pages",
+        "Navigate to wishlist page (/account/wishlist)",
+        "Verify wishlist items are displayed",
+        "Test moving items from wishlist to cart",
+        "Test removing items from wishlist"
+      ],
+      "expectedOutcome": "Wishlist functionality works for saving and managing favorite products"
+    },
+    {
+      "id": "search-functionality-test",
+      "name": "Search Functionality Test",
+      "category": "search",
+      "priority": "medium",
+      "description": "Test product search capabilities",
+      "steps": [
+        "Use search bar to search for specific products",
+        "Test search by product name (e.g., 'Chanel')",
+        "Test search by brand (e.g., 'Dior')",
+        "Test search by fragrance notes",
+        "Verify search results are relevant",
+        "Test empty search results handling"
+      ],
+      "expectedOutcome": "Search returns relevant results and handles various query types"
+    },
+    {
+      "id": "category-filtering-test",
+      "name": "Category Filtering Test",
+      "category": "filtering",
+      "priority": "medium",
+      "description": "Test product filtering by categories",
+      "steps": [
+        "Navigate to products page",
+        "Filter by Men's Fragrances category",
+        "Filter by Women's Fragrances category", 
+        "Filter by Unisex Fragrances category",
+        "Verify filtered results are accurate",
+        "Test clearing filters"
+      ],
+      "expectedOutcome": "Category filtering works correctly and shows appropriate products"
+    },
+    {
+      "id": "price-filtering-test",
+      "name": "Price Range Filtering Test",
+      "category": "filtering",
+      "priority": "medium",
+      "description": "Test product filtering by price range",
+      "steps": [
+        "Navigate to products page",
+        "Set minimum price filter",
+        "Set maximum price filter",
+        "Apply price range filter",
+        "Verify products shown are within price range",
+        "Test edge cases (very high/low prices)"
+      ],
+      "expectedOutcome": "Price filtering accurately shows products within specified range"
+    },
+    {
+      "id": "admin-product-management-test",
+      "name": "Admin Product Management Test",
+      "category": "admin",
+      "priority": "medium",
+      "description": "Test admin product management capabilities",
+      "steps": [
+        "Log in as admin user",
+        "Navigate to admin products page (/admin/products)",
+        "View product list with admin controls",
+        "Test adding new product",
+        "Test editing existing product",
+        "Test product image management",
+        "Test inventory adjustments"
+      ],
+      "expectedOutcome": "Admin can manage products with full CRUD operations",
+      "testData": {
+        "email": "admin@perfumeria.com",
+        "password": "admin123"
+      }
+    },
+    {
+      "id": "admin-order-management-test",
+      "name": "Admin Order Management Test",
+      "category": "admin",
+      "priority": "medium",
+      "description": "Test admin order management functionality",
+      "steps": [
+        "Log in as admin user",
+        "Navigate to admin orders page (/admin/orders)",
+        "View order list with details",
+        "Test order status updates",
+        "Test order search and filtering",
+        "View individual order details"
+      ],
+      "expectedOutcome": "Admin can view and manage customer orders effectively"
+    },
+    {
+      "id": "contact-form-test",
+      "name": "Contact Form Test",
+      "category": "contact",
+      "priority": "low",
+      "description": "Test contact form submission",
+      "steps": [
+        "Navigate to contact page (/contact)",
+        "Fill out contact form with valid information",
+        "Submit form",
+        "Verify success message is displayed",
+        "Test form validation with invalid data"
+      ],
+      "expectedOutcome": "Contact form submits successfully and shows appropriate feedback"
+    },
+    {
+      "id": "newsletter-subscription-test",
+      "name": "Newsletter Subscription Test",
+      "category": "newsletter",
+      "priority": "low",
+      "description": "Test newsletter subscription functionality",
+      "steps": [
+        "Find newsletter signup form (likely in footer)",
+        "Enter valid email address",
+        "Submit subscription",
+        "Verify success confirmation",
+        "Test duplicate subscription handling"
+      ],
+      "expectedOutcome": "Newsletter subscription works with proper validation and feedback"
+    },
+    {
+      "id": "responsive-design-test",
+      "name": "Responsive Design Test",
+      "category": "responsive",
+      "priority": "medium",
+      "description": "Test application responsiveness across different screen sizes",
+      "steps": [
+        "Test application on desktop resolution (1920x1080)",
+        "Test on tablet resolution (768x1024)",
+        "Test on mobile resolution (375x667)",
+        "Verify mobile menu functionality",
+        "Check that all features work on mobile",
+        "Verify touch interactions work properly"
+      ],
+      "expectedOutcome": "Application is fully responsive and functional across all device sizes"
+    },
+    {
+      "id": "performance-test",
+      "name": "Performance Test",
+      "category": "performance",
+      "priority": "medium",
+      "description": "Test application loading performance and responsiveness",
+      "steps": [
+        "Measure initial page load time",
+        "Test navigation speed between pages",
+        "Check image loading performance",
+        "Test with large product catalogs",
+        "Verify cart operations are fast",
+        "Check for memory leaks during extended use"
+      ],
+      "expectedOutcome": "Application loads quickly and performs well under normal usage"
+    },
+    {
+      "id": "error-handling-test",
+      "name": "Error Handling Test",
+      "category": "error-handling",
+      "priority": "medium",
+      "description": "Test application error handling and user feedback",
+      "steps": [
+        "Test with invalid login credentials",
+        "Test form submissions with missing required fields",
+        "Test network error scenarios (disconnect internet)",
+        "Test invalid product IDs in URLs",
+        "Verify appropriate error messages are shown",
+        "Check that errors don't crash the application"
+      ],
+      "expectedOutcome": "Application handles errors gracefully with helpful user feedback"
+    }
+  ],
+  "test_data_requirements": {
+    "user_accounts": "Use test_users.json for authentication tests",
+    "product_data": "Database contains sample perfume products with images",
+    "order_data": "Some test users have existing order history",
+    "admin_accounts": "Admin users available for management testing"
+  },
+  "critical_paths": [
+    "User Registration → Login → Browse Products → Add to Cart → Checkout → Order Confirmation",
+    "Admin Login → Product Management → Order Management",
+    "Guest User → Browse Products → Add to Cart → Guest Checkout"
+  ],
+  "browser_compatibility": [
+    "Chrome (latest)",
+    "Firefox (latest)", 
+    "Safari (latest)",
+    "Edge (latest)"
+  ],
+  "test_environment_notes": {
+    "database_state": "Contains seed data with products, users, and sample orders",
+    "authentication": "Uses JWT tokens with plain text passwords for development",
+    "external_services": "Payment processing and email services are mocked",
+    "file_uploads": "Product images use placeholder URLs"
+  }
+}

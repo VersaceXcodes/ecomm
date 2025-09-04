@@ -1,75 +1,226 @@
 {
-  "generated_at": "2025-09-03T22:00:00Z",
+  "generated_at": "2025-01-04T00:00:00Z",
   "user_structure": {
     "table_name": "users",
+    "admin_table_name": "admin_users",
     "role_field": "role",
     "registration_endpoint": "/api/auth/register",
-    "login_endpoint": "/api/auth/login"
+    "login_endpoint": "/api/auth/login",
+    "admin_login_endpoint": "/api/admin/auth/login",
+    "password_storage": "plain_text_for_development"
   },
-  "total_users": 4,
-  "verified_users": 4,
+  "total_users": 8,
+  "verified_users": 8,
   "users": [
     {
-      "email": "admin@perfumeria.com",
-      "password": "admin123",
-      "role": "super_admin",
-      "name": "Super Admin",
-      "verified": true,
-      "token": "jwt_token_here"
-    },
-    {
-      "email": "manager@perfumeria.com",
-      "password": "manager123",
-      "role": "manager",
-      "name": "Manager User",
-      "verified": true,
-      "token": "jwt_token_here"
-    },
-    {
-      "email": "support@perfumeria.com",
-      "password": "support123",
-      "role": "support",
-      "name": "Support User",
-      "verified": true,
-      "token": "jwt_token_here"
-    },
-    {
+      "user_id": "user_001",
       "email": "john.doe@email.com",
       "password": "password123",
       "role": "customer",
-      "name": "John Doe",
+      "first_name": "John",
+      "last_name": "Doe",
+      "phone": "+1-555-0101",
+      "email_verified": true,
+      "is_active": true,
       "verified": true,
-      "token": "jwt_token_here"
+      "has_orders": true,
+      "has_addresses": true,
+      "description": "Regular customer with order history and saved addresses"
+    },
+    {
+      "user_id": "user_002", 
+      "email": "jane.smith@email.com",
+      "password": "password123",
+      "role": "customer",
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "phone": "+1-555-0102",
+      "email_verified": true,
+      "is_active": true,
+      "verified": true,
+      "has_orders": true,
+      "has_addresses": true,
+      "description": "Customer with completed orders and reviews"
+    },
+    {
+      "user_id": "user_003",
+      "email": "mike.johnson@email.com", 
+      "password": "password123",
+      "role": "customer",
+      "first_name": "Mike",
+      "last_name": "Johnson",
+      "phone": "+1-555-0103",
+      "email_verified": false,
+      "is_active": true,
+      "verified": true,
+      "has_orders": true,
+      "has_addresses": true,
+      "description": "Customer with unverified email but active orders"
+    },
+    {
+      "user_id": "user_004",
+      "email": "sarah.wilson@email.com",
+      "password": "password123", 
+      "role": "customer",
+      "first_name": "Sarah",
+      "last_name": "Wilson",
+      "phone": "+1-555-0104",
+      "email_verified": true,
+      "is_active": true,
+      "verified": true,
+      "has_orders": false,
+      "has_addresses": true,
+      "description": "New customer with saved address but no orders yet"
+    },
+    {
+      "user_id": "user_005",
+      "email": "david.brown@email.com",
+      "password": "password123",
+      "role": "customer", 
+      "first_name": "David",
+      "last_name": "Brown",
+      "phone": "+1-555-0105",
+      "email_verified": true,
+      "is_active": true,
+      "verified": true,
+      "has_orders": false,
+      "has_addresses": false,
+      "description": "New customer with items in cart"
+    },
+    {
+      "admin_id": "admin_001",
+      "email": "admin@perfumeria.com",
+      "password": "admin123",
+      "role": "super_admin",
+      "username": "superadmin",
+      "permissions": ["all"],
+      "is_active": true,
+      "verified": true,
+      "description": "Super administrator with full access"
+    },
+    {
+      "admin_id": "admin_002", 
+      "email": "manager@perfumeria.com",
+      "password": "manager123",
+      "role": "manager",
+      "username": "manager",
+      "permissions": ["products", "orders", "inventory"],
+      "is_active": true,
+      "verified": true,
+      "description": "Manager with product and order management access"
+    },
+    {
+      "admin_id": "admin_003",
+      "email": "support@perfumeria.com",
+      "password": "support123", 
+      "role": "support",
+      "username": "support",
+      "permissions": ["orders", "customers"],
+      "is_active": true,
+      "verified": true,
+      "description": "Support staff with customer service access"
     }
   ],
   "by_role": {
-    "super_admin": [
-      {
-        "email": "admin@perfumeria.com",
-        "password": "admin123",
-        "verified": true
-      }
-    ],
-    "manager": [
-      {
-        "email": "manager@perfumeria.com",
-        "password": "manager123",
-        "verified": true
-      }
-    ],
-    "support": [
-      {
-        "email": "support@perfumeria.com",
-        "password": "support123",
-        "verified": true
-      }
-    ],
     "customer": [
       {
         "email": "john.doe@email.com",
         "password": "password123",
-        "verified": true
+        "verified": true,
+        "description": "Regular customer with order history"
+      },
+      {
+        "email": "jane.smith@email.com", 
+        "password": "password123",
+        "verified": true,
+        "description": "Customer with completed orders"
+      },
+      {
+        "email": "mike.johnson@email.com",
+        "password": "password123",
+        "verified": true,
+        "description": "Customer with unverified email"
+      },
+      {
+        "email": "sarah.wilson@email.com",
+        "password": "password123",
+        "verified": true,
+        "description": "New customer with address"
+      },
+      {
+        "email": "david.brown@email.com",
+        "password": "password123", 
+        "verified": true,
+        "description": "New customer with cart items"
+      }
+    ],
+    "admin": [
+      {
+        "email": "admin@perfumeria.com",
+        "password": "admin123",
+        "verified": true,
+        "role": "super_admin",
+        "description": "Super administrator"
+      },
+      {
+        "email": "manager@perfumeria.com",
+        "password": "manager123",
+        "verified": true,
+        "role": "manager", 
+        "description": "Product and order manager"
+      },
+      {
+        "email": "support@perfumeria.com",
+        "password": "support123",
+        "verified": true,
+        "role": "support",
+        "description": "Customer support staff"
       }
     ]
+  },
+  "test_scenarios": {
+    "new_user_registration": {
+      "email": "newuser@test.com",
+      "password": "newpass123",
+      "first_name": "New",
+      "last_name": "User",
+      "phone": "+1-555-9999"
+    },
+    "guest_checkout": {
+      "email": "guest@test.com",
+      "session_id": "sess_guest_001"
+    }
+  },
+  "sample_products": [
+    {
+      "product_id": "prod_001",
+      "name": "Bleu de Chanel",
+      "price": 89.99,
+      "sale_price": 79.99,
+      "stock_quantity": 50,
+      "sku": "BDC_50ML"
+    },
+    {
+      "product_id": "prod_002", 
+      "name": "Coco Mademoiselle",
+      "price": 95.99,
+      "sale_price": null,
+      "stock_quantity": 35,
+      "sku": "COCM_50ML"
+    },
+    {
+      "product_id": "prod_003",
+      "name": "Sauvage",
+      "price": 75.99,
+      "sale_price": 65.99,
+      "stock_quantity": 75,
+      "sku": "SAU_60ML"
+    }
+  ],
+  "authentication_notes": {
+    "password_format": "Plain text passwords for development environment",
+    "jwt_secret": "your-super-secret-jwt-key-for-development",
+    "token_expiry": "7 days for regular users, 30 days with remember_me",
+    "session_management": "JWT tokens stored in localStorage via Zustand persistence"
   }
 }

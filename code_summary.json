@@ -1,0 +1,267 @@
+{
+  "generated_at": "2025-01-04T00:00:00Z",
+  "project_name": "Perfume E-commerce Application",
+  "description": "A full-stack e-commerce application for selling perfumes and fragrances with user authentication, shopping cart, order management, and admin panel",
+  "tech_stack": [
+    "React 18.3.1",
+    "TypeScript 5.5.3", 
+    "Vite 5.4.0",
+    "Node.js 18.20.8",
+    "Express 4.19.2",
+    "PostgreSQL",
+    "Tailwind CSS 3.4.8",
+    "Zustand (State Management)",
+    "React Query (TanStack Query)",
+    "React Router DOM 6.26.0",
+    "Radix UI Components",
+    "JWT Authentication",
+    "Zod Validation"
+  ],
+  "architecture": {
+    "frontend": {
+      "framework": "React with Vite",
+      "port": 5174,
+      "build_tool": "Vite",
+      "styling": "Tailwind CSS",
+      "state_management": "Zustand with persistence",
+      "routing": "React Router DOM",
+      "api_client": "Axios with React Query"
+    },
+    "backend": {
+      "framework": "Express.js",
+      "port": 3001,
+      "language": "TypeScript",
+      "database": "PostgreSQL (Neon)",
+      "authentication": "JWT",
+      "validation": "Zod schemas",
+      "orm": "Raw SQL queries"
+    }
+  },
+  "features": [
+    {
+      "name": "User Authentication",
+      "description": "Complete user registration, login, logout, and profile management",
+      "files": [
+        "vitereact/src/components/views/UV_Login.tsx",
+        "vitereact/src/components/views/UV_Registration.tsx",
+        "vitereact/src/components/views/UV_UserDashboard.tsx",
+        "backend/server.ts (lines 223-471)"
+      ],
+      "endpoints": [
+        "POST /api/auth/register",
+        "POST /api/auth/login", 
+        "POST /api/auth/logout",
+        "GET /api/auth/me",
+        "POST /api/auth/forgot-password",
+        "POST /api/auth/reset-password"
+      ]
+    },
+    {
+      "name": "Product Catalog",
+      "description": "Browse products with filtering, searching, and detailed product views",
+      "files": [
+        "vitereact/src/components/views/UV_ProductListing.tsx",
+        "vitereact/src/components/views/UV_ProductDetail.tsx",
+        "vitereact/src/components/views/UV_Landing.tsx",
+        "backend/server.ts (lines 473-821)"
+      ],
+      "endpoints": [
+        "GET /api/products",
+        "GET /api/products/:product_id",
+        "PATCH /api/products/:product_id",
+        "GET /api/categories"
+      ]
+    },
+    {
+      "name": "Shopping Cart",
+      "description": "Add items to cart, manage quantities, and cart persistence",
+      "files": [
+        "vitereact/src/components/views/GV_CartSidebar.tsx",
+        "vitereact/src/components/views/UV_FullCart.tsx",
+        "backend/server.ts (lines 860-1259)"
+      ],
+      "endpoints": [
+        "GET /api/cart",
+        "POST /api/cart",
+        "PATCH /api/cart/:cart_item_id",
+        "DELETE /api/cart/:cart_item_id",
+        "DELETE /api/cart/clear"
+      ]
+    },
+    {
+      "name": "Order Management",
+      "description": "Place orders, view order history, and track order status",
+      "files": [
+        "vitereact/src/components/views/UV_CheckoutShipping.tsx",
+        "vitereact/src/components/views/UV_CheckoutPayment.tsx",
+        "vitereact/src/components/views/UV_CheckoutReview.tsx",
+        "vitereact/src/components/views/UV_OrderConfirmation.tsx",
+        "vitereact/src/components/views/UV_OrderHistory.tsx",
+        "backend/server.ts (lines 1261-1626)"
+      ],
+      "endpoints": [
+        "GET /api/orders",
+        "POST /api/orders",
+        "GET /api/orders/:order_id"
+      ]
+    },
+    {
+      "name": "User Profile & Addresses",
+      "description": "Manage user profile information and shipping/billing addresses",
+      "files": [
+        "vitereact/src/components/views/UV_AddressBook.tsx",
+        "backend/server.ts (lines 1628-2000+)"
+      ],
+      "endpoints": [
+        "GET /api/user/profile",
+        "PATCH /api/user/profile",
+        "POST /api/user/change-password",
+        "GET /api/user/addresses",
+        "POST /api/user/addresses",
+        "GET /api/user/addresses/:address_id",
+        "PATCH /api/user/addresses/:address_id",
+        "DELETE /api/user/addresses/:address_id"
+      ]
+    },
+    {
+      "name": "Wishlist",
+      "description": "Save favorite products for later purchase",
+      "files": [
+        "vitereact/src/components/views/UV_Wishlist.tsx"
+      ],
+      "endpoints": [
+        "GET /api/wishlist",
+        "POST /api/wishlist",
+        "DELETE /api/wishlist/:wishlist_item_id"
+      ]
+    },
+    {
+      "name": "Admin Panel",
+      "description": "Administrative interface for managing products, orders, and customers",
+      "files": [
+        "vitereact/src/components/views/UV_AdminLogin.tsx",
+        "vitereact/src/components/views/UV_AdminProducts.tsx",
+        "vitereact/src/components/views/UV_AdminOrders.tsx"
+      ],
+      "endpoints": [
+        "POST /api/admin/auth/login",
+        "GET /api/admin/auth/me",
+        "GET /api/admin/products",
+        "POST /api/admin/products",
+        "GET /api/admin/orders",
+        "GET /api/admin/customers"
+      ]
+    },
+    {
+      "name": "Contact & Newsletter",
+      "description": "Contact form and newsletter subscription functionality",
+      "files": [
+        "vitereact/src/components/views/UV_Contact.tsx"
+      ],
+      "endpoints": [
+        "POST /api/contact",
+        "POST /api/newsletter/subscribe"
+      ]
+    }
+  ],
+  "database_tables": [
+    "users",
+    "admin_users", 
+    "categories",
+    "products",
+    "product_images",
+    "addresses",
+    "cart_items",
+    "orders",
+    "order_items",
+    "wishlist_items",
+    "product_reviews",
+    "contact_messages",
+    "newsletter_subscriptions",
+    "shipping_methods",
+    "promo_codes",
+    "user_sessions",
+    "admin_sessions",
+    "order_status_history",
+    "inventory_adjustments"
+  ],
+  "api_endpoints": [
+    "/api/auth/register",
+    "/api/auth/login",
+    "/api/auth/logout", 
+    "/api/auth/me",
+    "/api/auth/forgot-password",
+    "/api/auth/reset-password",
+    "/api/products",
+    "/api/products/:product_id",
+    "/api/categories",
+    "/api/cart",
+    "/api/orders",
+    "/api/user/profile",
+    "/api/user/addresses",
+    "/api/wishlist",
+    "/api/admin/auth/login",
+    "/api/admin/products",
+    "/api/admin/orders",
+    "/api/contact",
+    "/api/newsletter/subscribe",
+    "/api/health"
+  ],
+  "key_components": {
+    "layouts": [
+      "CustomerLayout (App.tsx:78-94)",
+      "AdminLayout (App.tsx:96-105)"
+    ],
+    "global_components": [
+      "GV_TopNavigation",
+      "GV_Footer", 
+      "GV_CartSidebar",
+      "GV_MobileMenu"
+    ],
+    "page_components": [
+      "UV_Landing",
+      "UV_ProductListing",
+      "UV_ProductDetail",
+      "UV_Login",
+      "UV_Registration",
+      "UV_FullCart",
+      "UV_UserDashboard",
+      "UV_OrderHistory",
+      "UV_AddressBook",
+      "UV_Wishlist",
+      "UV_CheckoutShipping",
+      "UV_CheckoutPayment", 
+      "UV_CheckoutReview",
+      "UV_OrderConfirmation",
+      "UV_AdminLogin",
+      "UV_AdminProducts",
+      "UV_AdminOrders",
+      "UV_Contact",
+      "UV_About",
+      "UV_PrivacyPolicy"
+    ]
+  },
+  "state_management": {
+    "store_file": "vitereact/src/store/main.tsx",
+    "state_sections": [
+      "authentication_state",
+      "cart_state", 
+      "ui_state",
+      "product_filters",
+      "admin_state"
+    ],
+    "persistence": "localStorage with zustand/middleware/persist"
+  },
+  "environment_config": {
+    "frontend_env": "vitereact/.env",
+    "backend_env": "backend/.env",
+    "development_ports": {
+      "frontend": 5174,
+      "backend": 3001
+    },
+    "production_urls": {
+      "frontend": "https://123ecomm.launchpulse.ai",
+      "backend": "https://123ecomm.launchpulse.ai"
+    }
+  }
+}
