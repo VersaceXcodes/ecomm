@@ -30,7 +30,7 @@ const GV_TopNavigation: React.FC = () => {
   // Local state for search functionality
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearchSuggestions, setShowSearchSuggestions] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
+  // Removed unused isSearching state
   const searchRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -40,7 +40,7 @@ const GV_TopNavigation: React.FC = () => {
   const cartItemCount = useAppStore(state => state.cart_state.total_quantity);
   const cartTotal = useAppStore(state => state.cart_state.total);
   const isMobileMenuOpen = useAppStore(state => state.ui_state.mobile_menu_open);
-  const isCartSidebarOpen = useAppStore(state => state.ui_state.cart_sidebar_open);
+  // Removed unused isCartSidebarOpen
   const currentBreakpoint = useAppStore(state => state.ui_state.current_breakpoint);
   
   // Global state actions

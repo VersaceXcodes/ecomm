@@ -258,7 +258,7 @@ export const useAppStore = create<AppState>()(
       },
       
       clear_authentication_state: () => {
-        set((state) => ({
+        set((_state) => ({
           authentication_state: {
             current_user: null,
             auth_token: null,
@@ -318,7 +318,7 @@ export const useAppStore = create<AppState>()(
       },
       
       clear_cart_state: () => {
-        set((state) => ({
+        set((_state) => ({
           cart_state: {
             items: [],
             total_quantity: 0,
@@ -445,7 +445,7 @@ export const useAppStore = create<AppState>()(
       },
       
       clear_product_filters: () => {
-        set((state) => ({
+        set((_state) => ({
           product_filters: {
             search_query: '',
             price_min: null,
@@ -507,7 +507,7 @@ export const useAppStore = create<AppState>()(
       },
       
       clear_admin_state: () => {
-        set((state) => ({
+        set((_state) => ({
           admin_state: {
             current_admin: null,
             admin_token: null,
@@ -519,13 +519,13 @@ export const useAppStore = create<AppState>()(
       
       // Session actions
       generate_session_id: () => {
-        set((state) => ({
+        set((_state) => ({
           session_id: generateSessionId(),
         }));
       },
       
       set_session_id: (sessionId) => {
-        set((state) => ({
+        set((_state) => ({
           session_id: sessionId,
         }));
       },
@@ -608,15 +608,4 @@ export const useAppStore = create<AppState>()(
   )
 );
 
-// Export types for component consumption
-export type {
-  User,
-  AdminUser,
-  CartItem,
-  AuthenticationState,
-  CartState,
-  UIState,
-  ProductFilters,
-  AdminState,
-  AppState,
-};
+// Export types for component consumption - removed duplicate exports

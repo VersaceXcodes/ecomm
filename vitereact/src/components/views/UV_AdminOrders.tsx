@@ -53,17 +53,6 @@ interface OrderWithItems extends Order {
   billing_address?: any;
 }
 
-interface User {
-  user_id: string;
-  email: string;
-  first_name: string;
-  last_name: string;
-  phone: string | null;
-  email_verified: boolean;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
 
 interface SearchOrdersInput {
   status?: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';

@@ -57,7 +57,6 @@ const GV_CartSidebar: React.FC = () => {
   // Global state actions
   const toggle_cart_sidebar = useAppStore(state => state.toggle_cart_sidebar);
   const set_cart_items = useAppStore(state => state.set_cart_items);
-  const set_cart_loading = useAppStore(state => state.set_cart_loading);
   const update_cart_totals = useAppStore(state => state.update_cart_totals);
 
   const queryClient = useQueryClient();
@@ -74,7 +73,7 @@ const GV_CartSidebar: React.FC = () => {
   };
 
   // Load cart items query
-  const { refetch: refetchCart } = useQuery({
+  const { data: cartData, refetch: refetchCart, error: cartError } = useQuery({
     queryKey: ['cart', current_user?.user_id || session_id],
     queryFn: async (): Promise<CartResponse> => {
       const params: Record<string, string> = {};
@@ -92,18 +91,26 @@ const GV_CartSidebar: React.FC = () => {
     staleTime: 60000,
     refetchOnWindowFocus: false,
     retry: 1,
-    onSuccess: (data) => {
-      set_cart_items(data.items);
-      update_cart_totals({
-        total_quantity: data.total_quantity,
-        subtotal: data.subtotal,
-        total: data.total,
-      });
-    },
-    onError: () => {
-      setErrorMessage('Failed to load cart items');
-    },
   });
+
+  // Handle cart data updates
+  useEffect(() => {
+    if (cartData) {
+      set_cart_items(cartData.items);
+      update_cart_totals({
+        total_quantity: cartData.total_quantity,
+        subtotal: cartData.subtotal,
+        total: cartData.total,
+      });
+    }
+  }, [cartData, set_cart_items, update_cart_totals]);
+
+  // Handle cart errors
+  useEffect(() => {
+    if (cartError) {
+      setErrorMessage('Failed to load cart items');
+    }
+  }, [cartError]);
 
   // Update cart item quantity mutation
   const updateCartItemMutation = useMutation({
@@ -292,6 +299,7 @@ const GV_CartSidebar: React.FC = () => {
             // Cart items
             <div className="p-4 space-y-4">
               {cart_items.map((item) => {
+                if (!item.product) return null;
                 const isUpdating = updating_item_id === item.cart_item_id;
                 const effectivePrice = item.product.sale_price || item.product.price;
                 
@@ -299,7 +307,7 @@ const GV_CartSidebar: React.FC = () => {
                   <div key={item.cart_item_id} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
                     {/* Product Image */}
                     <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded-md overflow-hidden">
-                      {item.product.image_url ? (
+                      {item.product?.image_url ? (
                         <img
                           src={item.product.image_url}
                           alt={item.product.name}
@@ -317,11 +325,11 @@ const GV_CartSidebar: React.FC = () => {
                     {/* Product Details */}
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-medium text-gray-900 truncate">
-                        {item.product.name}
+                        {item.product?.name || 'Unknown Product'}
                       </h4>
-                      <p className="text-xs text-gray-500">{item.product.brand}</p>
+                      <p className="text-xs text-gray-500">{item.product?.brand || 'Unknown Brand'}</p>
                       <div className="flex items-center space-x-2 mt-1">
-                        {item.product.sale_price && (
+                        {item.product?.sale_price && (
                           <span className="text-xs text-gray-400 line-through">
                             ${item.product.price.toFixed(2)}
                           </span>

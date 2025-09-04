@@ -52,9 +52,7 @@ const UV_CheckoutShipping: React.FC = () => {
   
   // Global state access with individual selectors
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const cartItems = useAppStore(state => state.cart_state.items);
   const cartTotal = useAppStore(state => state.cart_state.subtotal);
 
   // Local state
@@ -86,7 +84,7 @@ const UV_CheckoutShipping: React.FC = () => {
   const {
     data: addressesData,
     isLoading: addressesLoading,
-    error: addressesError
+    error: _addressesError
   } = useQuery({
     queryKey: ['user-addresses', 'shipping'],
     queryFn: async () => {

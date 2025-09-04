@@ -130,7 +130,7 @@ const UV_ProductDetail: React.FC = () => {
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
   const sessionId = useAppStore(state => state.session_id);
   const setCartItems = useAppStore(state => state.set_cart_items);
-  const setCartLoading = useAppStore(state => state.set_cart_loading);
+  // Removed unused setCartLoading
   const updateCartTotals = useAppStore(state => state.update_cart_totals);
 
   // API base URL

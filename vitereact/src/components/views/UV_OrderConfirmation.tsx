@@ -116,7 +116,7 @@ const UV_OrderConfirmation: React.FC = () => {
   // Fetch recommended products
   const {
     data: recommendedData,
-    isLoading: recommendedLoading
+    isLoading: _recommendedLoading
   } = useQuery<ProductsResponse>({
     queryKey: ['recommended-products'],
     queryFn: async () => {

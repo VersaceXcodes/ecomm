@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAppStore } from '@/store/main';
@@ -118,8 +118,8 @@ const UV_Wishlist: React.FC = () => {
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const currentUser = useAppStore(state => state.authentication_state.current_user);
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
-  const setCartItems = useAppStore(state => state.set_cart_items);
-  const setCartLoading = useAppStore(state => state.set_cart_loading);
+  // Removed unused setCartItems
+  // Removed unused setCartLoading
 
   // React Query
   const queryClient = useQueryClient();

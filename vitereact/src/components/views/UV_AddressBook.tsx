@@ -72,7 +72,6 @@ const defaultFormState: AddressFormData = {
 const UV_AddressBook: React.FC = () => {
   // Zustand state - individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
 
   // Local state
   const [showAddressForm, setShowAddressForm] = useState(false);

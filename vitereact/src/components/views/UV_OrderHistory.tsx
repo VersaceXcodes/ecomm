@@ -78,7 +78,7 @@ interface Pagination {
 const UV_OrderHistory: React.FC = () => {
   // Global state access - individual selectors to avoid infinite loops
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const currentUser = useAppStore(state => state.authentication_state.current_user);
+  // Removed unused currentUser
   const setCartItems = useAppStore(state => state.set_cart_items);
   const setCartLoading = useAppStore(state => state.set_cart_loading);
 
@@ -93,7 +93,7 @@ const UV_OrderHistory: React.FC = () => {
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [orderItems, setOrderItems] = useState<{ [order_id: string]: OrderItem[] }>({});
 
-  const queryClient = useQueryClient();
+  // Removed unused queryClient
 
   // API base URL
   const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api`;
@@ -103,7 +103,7 @@ const UV_OrderHistory: React.FC = () => {
     data: ordersData,
     isLoading: loadingOrders,
     error: ordersError,
-    refetch: refetchOrders
+    refetch: _refetchOrders
   } = useQuery({
     queryKey: ['orders', filters, pagination.limit, pagination.offset],
     queryFn: async (): Promise<OrdersResponse> => {

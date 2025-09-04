@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -86,7 +86,6 @@ const UV_AdminProducts: React.FC = () => {
   
   // Admin state from Zustand
   const adminToken = useAppStore(state => state.admin_state.admin_token);
-  const currentAdmin = useAppStore(state => state.admin_state.current_admin);
   const isAdminAuthenticated = useAppStore(state => state.admin_state.is_authenticated);
   
   // Local state
@@ -98,10 +97,10 @@ const UV_AdminProducts: React.FC = () => {
     searchParams.get('is_featured') ? searchParams.get('is_featured') === 'true' : null
   );
   const [categoryFilter, setCategoryFilter] = useState<string | null>(searchParams.get('category_id') || null);
-  const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  // Removed unused editingProductId state
   
   // Product form state
   const [productForm, setProductForm] = useState<CreateProductInput>({
@@ -205,7 +204,7 @@ const UV_AdminProducts: React.FC = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-products'] });
-      setEditingProductId(null);
+      // Removed setEditingProductId call
     },
   });
 
@@ -579,7 +578,7 @@ const UV_AdminProducts: React.FC = () => {
                             </button>
                             
                             <button
-                              onClick={() => setEditingProductId(product.product_id)}
+                              onClick={() => {/* Removed setEditingProductId call */}}
                               className="text-sm bg-blue-100 text-blue-800 px-3 py-1 rounded hover:bg-blue-200 transition-colors"
                             >
                               Edit

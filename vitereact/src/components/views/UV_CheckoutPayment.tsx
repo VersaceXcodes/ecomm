@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import axios from 'axios';
 import { useAppStore } from '@/store/main';
 
 // Types for payment processing
@@ -29,14 +28,6 @@ interface BillingAddress {
   is_default: boolean;
 }
 
-interface SavedPaymentMethod {
-  payment_method_id: string;
-  type: string;
-  last_four: string;
-  expiry_month: string;
-  expiry_year: string;
-  cardholder_name: string;
-}
 
 interface PaymentValidationRequest {
   payment_method_type: string;
@@ -71,11 +62,8 @@ const UV_CheckoutPayment: React.FC = () => {
   });
   const [billingAddress, setBillingAddress] = useState<BillingAddress | null>(null);
   const [sameAsShipping, setSameAsShipping] = useState<boolean>(true);
-  const [savedPaymentMethods, setSavedPaymentMethods] = useState<SavedPaymentMethod[]>([]);
-  const [selectedSavedMethod, setSelectedSavedMethod] = useState<string>('');
   const [processingPayment, setProcessingPayment] = useState<boolean>(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
-  const [securityVerificationRequired, setSecurityVerificationRequired] = useState<boolean>(false);
   const [showCvvHelp, setShowCvvHelp] = useState<boolean>(false);
   const [cardType, setCardType] = useState<string>('');
   const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
@@ -122,7 +110,7 @@ const UV_CheckoutPayment: React.FC = () => {
   };
 
   // Placeholder for saved payment methods query
-  const { data: savedMethodsData } = useQuery({
+  useQuery({
     queryKey: ['saved-payment-methods', currentUser?.user_id],
     queryFn: async () => {
       if (!isAuthenticated) return [];
@@ -244,7 +232,7 @@ const UV_CheckoutPayment: React.FC = () => {
         state_province: 'Sample State',
         postal_code: '12345',
         country: 'United States',
-        phone: currentUser.phone,
+        phone: currentUser.phone || undefined,
         is_default: false
       });
     }

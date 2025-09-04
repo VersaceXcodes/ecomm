@@ -70,12 +70,11 @@ const UV_Login: React.FC = () => {
   // Global state selectors (individual selectors to avoid infinite loops)
   const isAuthenticated = useAppStore(state => state.authentication_state.authentication_status.is_authenticated);
   const authLoading = useAppStore(state => state.authentication_state.authentication_status.is_loading);
-  const setAuthenticationState = useAppStore(state => state.set_authentication_state);
+  // Removed unused setAuthenticationState
   const setCurrentUser = useAppStore(state => state.set_current_user);
   const setAuthToken = useAppStore(state => state.set_auth_token);
   const setAuthenticationLoading = useAppStore(state => state.set_authentication_loading);
   const setAuthenticationError = useAppStore(state => state.set_authentication_error);
-  const sessionId = useAppStore(state => state.session_id);
 
   // Redirect if already authenticated
   useEffect(() => {

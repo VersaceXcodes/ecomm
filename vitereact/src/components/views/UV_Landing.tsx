@@ -86,7 +86,7 @@ const UV_Landing: React.FC = () => {
   const sessionId = useAppStore(state => state.session_id);
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const setCartState = useAppStore(state => state.set_cart_state);
-  const setCartItems = useAppStore(state => state.set_cart_items);
+  // Removed unused setCartItems
 
   // API Base URL
   const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api`;

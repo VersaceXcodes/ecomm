@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
@@ -58,19 +58,9 @@ const GV_MobileMenu: React.FC = () => {
   // Store actions
   const toggleMobileMenu = useAppStore(state => state.toggle_mobile_menu);
   const clearAuthenticationState = useAppStore(state => state.clear_authentication_state);
-  const setSearchQuery = useAppStore(state => state.set_search_query);
+  const setGlobalSearchQuery = useAppStore(state => state.set_search_query);
 
-  // API Calls
-  const performMobileSearch = async (query: string): Promise<ProductSearchResponse> => {
-    const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'}/api/products`, {
-      params: {
-        search_query: query,
-        limit: 20,
-        offset: 0
-      }
-    });
-    return response.data;
-  };
+  // API Calls - removed unused performMobileSearch function
 
   const loadRecentProducts = async (): Promise<ProductSearchResponse> => {
     const headers: Record<string, string> = {};
@@ -167,7 +157,7 @@ const GV_MobileMenu: React.FC = () => {
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      setSearchQuery(searchQuery.trim());
+      setGlobalSearchQuery(searchQuery.trim());
       toggleMobileMenu(); // Close menu
       navigate(`/products?search_query=${encodeURIComponent(searchQuery.trim())}`);
     }

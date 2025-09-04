@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import React, { useState, useCallback } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
@@ -73,7 +73,7 @@ interface CartResponse {
 
 const UV_ProductListing: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  // Removed unused navigate
   const queryClient = useQueryClient();
 
   // Global state access - using individual selectors to avoid infinite loops
@@ -81,7 +81,7 @@ const UV_ProductListing: React.FC = () => {
   const authToken = useAppStore(state => state.authentication_state.auth_token);
   const sessionId = useAppStore(state => state.session_id);
   const setCartState = useAppStore(state => state.set_cart_state);
-  const setCartItems = useAppStore(state => state.set_cart_items);
+  // Removed unused setCartItems
 
   // Local state for filters
   const [currentFilters, setCurrentFilters] = useState({
@@ -142,7 +142,7 @@ const UV_ProductListing: React.FC = () => {
   });
 
   // Fetch categories
-  const { data: categoriesData, isLoading: loadingCategories } = useQuery<CategoriesResponse>({
+  const { data: categoriesData, isLoading: _loadingCategories } = useQuery<CategoriesResponse>({
     queryKey: ['categories'],
     queryFn: async () => {
       const response = await axios.get(

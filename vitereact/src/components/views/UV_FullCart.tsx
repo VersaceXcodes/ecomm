@@ -327,7 +327,7 @@ const UV_FullCart: React.FC = () => {
         </div>
       )}
 
-      {!loadingCart && !cartError && cartData?.items?.length > 0 && (
+      {!loadingCart && !cartError && cartData && cartData.items && cartData.items.length > 0 && (
         <div className="min-h-screen bg-gray-50 py-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {/* Header */}
@@ -335,7 +335,7 @@ const UV_FullCart: React.FC = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-4 sm:mb-0">Shopping Cart</h1>
               <div className="flex items-center space-x-4">
                 <span className="text-sm text-gray-600">
-                  {cartData.total_quantity} {cartData.total_quantity === 1 ? 'item' : 'items'}
+                  {cartData?.total_quantity || 0} {(cartData?.total_quantity || 0) === 1 ? 'item' : 'items'}
                 </span>
                 <button
                   onClick={handleClearCart}
@@ -356,7 +356,7 @@ const UV_FullCart: React.FC = () => {
                   </div>
                   
                   <div className="divide-y divide-gray-200">
-                    {cartData.items.map((item) => {
+                    {cartData?.items?.map((item) => {
                       const primaryImage = item.product.images?.find(img => img.is_primary) || item.product.images?.[0];
                       const currentPrice = item.product.sale_price || item.product.price;
                       const isOnSale = !!item.product.sale_price;
@@ -551,19 +551,19 @@ const UV_FullCart: React.FC = () => {
                   <div className="space-y-3 border-t border-gray-200 pt-6">
                     <div className="flex justify-between text-sm text-gray-600">
                       <span>Subtotal</span>
-                      <span>${cartData.subtotal.toFixed(2)}</span>
+                      <span>${(cartData?.subtotal || 0).toFixed(2)}</span>
                     </div>
                     
                     <div className="flex justify-between text-sm text-gray-600">
                       <span>Shipping</span>
                       <span>
-                        {cartData.shipping_cost === 0 ? 'Free' : `$${cartData.shipping_cost.toFixed(2)}`}
+                        {(cartData?.shipping_cost || 0) === 0 ? 'Free' : `$${(cartData?.shipping_cost || 0).toFixed(2)}`}
                       </span>
                     </div>
                     
                     <div className="flex justify-between text-sm text-gray-600">
                       <span>Tax</span>
-                      <span>${cartData.tax_amount.toFixed(2)}</span>
+                      <span>${(cartData?.tax_amount || 0).toFixed(2)}</span>
                     </div>
 
                     {promoDiscount > 0 && (
@@ -585,7 +585,7 @@ const UV_FullCart: React.FC = () => {
                   <div className="mt-6">
                     <button
                       onClick={handleProceedToCheckout}
-                      disabled={cartData.items.length === 0}
+                      disabled={(cartData?.items?.length || 0) === 0}
                       className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
                     >
                       Proceed to Checkout

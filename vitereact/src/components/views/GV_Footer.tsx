@@ -60,7 +60,7 @@ const GV_Footer: React.FC = () => {
       );
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       setNewsletterSuccess(true);
       setNewsletterError(null);
       setNewsletterEmail('');

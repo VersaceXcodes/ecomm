@@ -81,9 +81,6 @@ const UV_CheckoutReview: React.FC = () => {
   // Global state access - individual selectors to avoid infinite loops
   const currentUser = useAppStore(state => state.authentication_state.current_user);
   const authToken = useAppStore(state => state.authentication_state.auth_token);
-  const cartItems = useAppStore(state => state.cart_state.items);
-  const cartSubtotal = useAppStore(state => state.cart_state.subtotal);
-  const cartTotal = useAppStore(state => state.cart_state.total);
   const sessionId = useAppStore(state => state.session_id);
   
   // Local state management
