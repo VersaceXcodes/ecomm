@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import request from 'supertest';
-import { app, pool } from './server.ts';
+import { app, pool } from './server.js';
 
 // Mock external API calls
 jest.mock('node-fetch', () => ({

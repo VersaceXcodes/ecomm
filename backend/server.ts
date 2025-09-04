@@ -36,7 +36,7 @@ import {
   shippingMethodSchema, promoCodeSchema,
   inventoryAdjustmentSchema, createInventoryAdjustmentInputSchema,
   orderStatusHistorySchema, createOrderStatusHistoryInputSchema
-} from './schema.ts';
+} from './schema.js';
 
 dotenv.config();
 
@@ -67,12 +67,57 @@ const pool = new Pool(
 );
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'https://123ecomm.launchpulse.ai',
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://localhost:4173'
+    ];
+    
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: "5mb" }));
 app.use(morgan('combined'));
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    service: 'ecommerce-backend',
+    version: '1.0.0'
+  });
+});
+
+// API health check
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    timestamp: new Date().toISOString(),
+    service: 'ecommerce-api',
+    version: '1.0.0'
+  });
+});
 
 // Error response utility
 interface ErrorResponse {
@@ -4485,6 +4530,37 @@ app.get('/api/health', (req, res) => {
 // ============================================================================
 // SPA CATCH-ALL ROUTE
 // ============================================================================
+
+// ============================================================================
+// ERROR HANDLING MIDDLEWARE
+// ============================================================================
+
+// 404 handler for API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json(createErrorResponse(
+    `API endpoint not found: ${req.method} ${req.path}`,
+    null,
+    'ENDPOINT_NOT_FOUND'
+  ));
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  
+  // Ensure we always send JSON for API routes
+  if (req.path.startsWith('/api/')) {
+    if (!res.headersSent) {
+      res.status(500).json(createErrorResponse(
+        'Internal server error',
+        err,
+        'INTERNAL_SERVER_ERROR'
+      ));
+    }
+  } else {
+    next(err);
+  }
+});
 
 // Catch-all route for SPA routing (must be last)
 app.get(/^(?!\/api).*/, (req, res) => {
