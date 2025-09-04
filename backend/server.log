@@ -1,17 +1,14 @@
 
-> backend@1.0.0 dev
-> tsx server.ts
+> backend@1.0.0 start
+> nodemon --exec "tsx" server.ts
 
+[33m[nodemon] 3.1.10[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: ts,json[39m
+[32m[nodemon] starting `tsx server.ts`[39m
 Server running on port 3000 and listening on 0.0.0.0
-127.0.0.1 - - [04/Sep/2025:17:26:02 +0000] "GET /api/products HTTP/1.1" 200 7638 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:03 +0000] "GET /api/products/prod_001 HTTP/1.1" 200 4236 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:03 +0000] "GET /api/products?search_query=chanel HTTP/1.1" 200 2166 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:04 +0000] "GET /api/categories HTTP/1.1" 200 855 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:10 +0000] "GET /health HTTP/1.1" 200 102 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:10 +0000] "GET /api/products?limit=3 HTTP/1.1" 200 3171 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:10 +0000] "GET /api/products?is_featured=true&limit=2 HTTP/1.1" 200 2164 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:10 +0000] "GET /api/products?search_query=dior&limit=1 HTTP/1.1" 200 1068 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:11 +0000] "GET /api/products/prod_001 HTTP/1.1" 200 4236 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:11 +0000] "GET /api/categories HTTP/1.1" 200 855 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:11 +0000] "GET /api/health HTTP/1.1" 200 98 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:26:19 +0000] "GET /api/products HTTP/1.1" 200 7638 "-" "curl/7.88.1"
+127.0.0.1 - - [04/Sep/2025:17:36:44 +0000] "GET /health HTTP/1.1" 200 102 "-" "curl/7.88.1"
+127.0.0.1 - - [04/Sep/2025:17:36:48 +0000] "GET /api/products?limit=2 HTTP/1.1" 200 2164 "-" "curl/7.88.1"
+127.0.0.1 - - [04/Sep/2025:17:36:52 +0000] "GET /api/products?limit=2 HTTP/1.1" 200 2164 "-" "curl/7.88.1"
+127.0.0.1 - - [04/Sep/2025:17:36:55 +0000] "GET / HTTP/1.1" 200 827 "-" "curl/7.88.1"
