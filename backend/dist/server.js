@@ -58,8 +58,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "5mb" }));
 app.use(morgan('combined'));
-// Serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the vitereact build directory
+app.use(express.static(path.join(__dirname, '../vitereact/dist')));
 // Health check endpoint
 app.get('/health', (req, res) => {
     res.json({
@@ -3749,7 +3749,7 @@ app.use((err, req, res, next) => {
 });
 // Catch-all route for SPA routing (must be last)
 app.get(/^(?!\/api).*/, (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, '../vitereact/dist', 'index.html'));
 });
 // ============================================================================
 // SERVER STARTUP
