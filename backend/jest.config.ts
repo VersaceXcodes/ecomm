@@ -1,10 +1,10 @@
 module.exports = {
   "testEnvironment": "node",
   "extensionsToTreatAsEsm": [".ts"],
-  "globals": {
-    "ts-jest": {
+  "transform": {
+    "^.+\\.ts$": ["ts-jest", {
       "useESM": true
-    }
+    }]
   },
   "testMatch": [
     "**/__tests__/**/*.test.{js,ts}",
@@ -44,7 +44,6 @@ module.exports = {
     "/dist/",
     "/build/"
   ],
-  "preset": "ts-jest/presets/default-esm",
   "moduleNameMapper": {
     "^(\\.{1,2}/.*)\\.js$": "$1"
   }
