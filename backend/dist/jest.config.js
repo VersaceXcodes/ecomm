@@ -1,16 +1,15 @@
 module.exports = {
     "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-        "<rootDir>/tests/setup.js"
-    ],
+    "preset": "ts-jest",
     "testMatch": [
-        "**/__tests__/**/*.test.js",
-        "**/?(*.)+(spec|test).js"
+        "**/__tests__/**/*.test.{js,ts}",
+        "**/?(*.)+(spec|test).{js,ts}"
     ],
     "collectCoverageFrom": [
-        "src/**/*.{js,ts}",
-        "!src/**/*.d.ts",
-        "!src/tests/**"
+        "*.{js,ts}",
+        "!*.d.ts",
+        "!jest.config.ts",
+        "!dist/**"
     ],
     "coverageReporters": [
         "text",
@@ -30,12 +29,6 @@ module.exports = {
     "forceExit": true,
     "detectOpenHandles": true,
     "verbose": true,
-    "transform": {
-        "^.+\\.(js|jsx|ts|tsx)$": "babel-jest"
-    },
-    "moduleNameMapping": {
-        "^@/(.*)$": "<rootDir>/src/$1"
-    },
     "testPathIgnorePatterns": [
         "/node_modules/",
         "/dist/",
@@ -45,8 +38,7 @@ module.exports = {
         "/node_modules/",
         "/dist/",
         "/build/"
-    ],
-    "preset": "ts-jest"
+    ]
 };
 export {};
 //# sourceMappingURL=jest.config.js.map
