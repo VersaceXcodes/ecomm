@@ -8,7 +8,6 @@
 [33m[nodemon] watching extensions: ts,json[39m
 [32m[nodemon] starting `tsx server.ts`[39m
 Server running on port 3000 and listening on 0.0.0.0
-127.0.0.1 - - [04/Sep/2025:17:36:44 +0000] "GET /health HTTP/1.1" 200 102 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:36:48 +0000] "GET /api/products?limit=2 HTTP/1.1" 200 2164 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:36:52 +0000] "GET /api/products?limit=2 HTTP/1.1" 200 2164 "-" "curl/7.88.1"
-127.0.0.1 - - [04/Sep/2025:17:36:55 +0000] "GET / HTTP/1.1" 200 827 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:33:35 +0000] "GET /health HTTP/1.1" 200 102 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:33:45 +0000] "GET / HTTP/1.1" 200 827 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:33:53 +0000] "GET /health HTTP/1.1" 200 102 "-" "curl/7.88.1"
