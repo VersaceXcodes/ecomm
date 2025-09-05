@@ -7,7 +7,7 @@ import { useAppStore } from '@/store/main';
 // Types for API request and response
 interface RegisterRequest {
   email: string;
-  password: string;
+  password_hash: string;
   first_name: string;
   last_name: string;
   phone?: string;
@@ -178,7 +178,7 @@ const UV_Registration: React.FC = () => {
     // Prepare registration data
     const registrationData: RegisterRequest = {
       email: email.trim(),
-      password,
+      password_hash: password,
       first_name: firstName.trim(),
       last_name: lastName.trim(),
     };

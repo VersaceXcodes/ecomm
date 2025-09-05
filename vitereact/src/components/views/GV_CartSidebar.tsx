@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
+import { formatCurrency } from '@/lib/formatters';
 
 // Types for API responses
 interface CartItemWithProduct {
@@ -331,11 +332,11 @@ const GV_CartSidebar: React.FC = () => {
                       <div className="flex items-center space-x-2 mt-1">
                         {item.product?.sale_price && (
                           <span className="text-xs text-gray-400 line-through">
-                            ${(Number(item.product.price) || 0).toFixed(2)}
+                            ${formatCurrency(item.product.price)}
                           </span>
                         )}
                         <span className="text-sm font-medium text-gray-900">
-                          ${(effectivePrice || 0).toFixed(2)}
+                          ${formatCurrency(effectivePrice)}
                         </span>
                       </div>
                     </div>
@@ -398,11 +399,11 @@ const GV_CartSidebar: React.FC = () => {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Subtotal:</span>
-                <span className="font-medium">${(cart_subtotal || 0).toFixed(2)}</span>
+                <span className="font-medium">${formatCurrency(cart_subtotal)}</span>
               </div>
               <div className="flex justify-between text-lg font-semibold border-t pt-2">
                 <span>Total:</span>
-                <span>${(cart_total || 0).toFixed(2)}</span>
+                <span>${formatCurrency(cart_total)}</span>
               </div>
               <p className="text-xs text-gray-500">Shipping and taxes calculated at checkout</p>
             </div>

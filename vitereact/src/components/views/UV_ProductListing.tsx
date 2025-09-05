@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
+import { formatCurrency, safeParseNumber } from '@/lib/formatters';
 
 // Types based on Zod schemas
 interface Product {
@@ -252,9 +253,9 @@ const UV_ProductListing: React.FC = () => {
 
   // Get current price for display (sale price if available, otherwise regular price)
   const getCurrentPrice = (product: Product) => {
-    const price = Number(product.price) || 0;
-    const salePrice = product.sale_price ? Number(product.sale_price) : null;
-    return salePrice || price;
+    const price = safeParseNumber(product.price, 0);
+    const salePrice = product.sale_price ? safeParseNumber(product.sale_price, 0) : null;
+    return (salePrice !== null && salePrice > 0) ? salePrice : price;
   };
 
   // Get primary image URL
@@ -493,11 +494,11 @@ const UV_ProductListing: React.FC = () => {
                         <div className="mb-3">
                           <div className="flex items-center gap-2">
                             <span className="text-xl font-bold text-gray-900">
-                              ${(getCurrentPrice(product) || 0).toFixed(2)}
+                              ${formatCurrency(getCurrentPrice(product))}
                             </span>
                             {product.sale_price && (
                               <span className="text-sm text-gray-500 line-through">
-                                ${(Number(product.price) || 0).toFixed(2)}
+                                ${formatCurrency(product.price)}
                               </span>
                             )}
                           </div>

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { useAppStore } from '@/store/main';
+import { formatCurrency, safeParseNumber } from '@/lib/formatters';
 
 // Types based on OpenAPI schemas
 interface Product {
@@ -218,9 +219,9 @@ const UV_Landing: React.FC = () => {
 
   // Get product price display
   const getProductPrice = (product: ProductWithImages) => {
-    const price = Number(product.price) || 0;
-    const salePrice = product.sale_price ? Number(product.sale_price) : null;
-    const hasDiscount = salePrice && salePrice < price;
+    const price = safeParseNumber(product.price, 0);
+    const salePrice = product.sale_price ? safeParseNumber(product.sale_price, 0) : null;
+    const hasDiscount = salePrice !== null && salePrice > 0 && salePrice < price;
     return {
       currentPrice: hasDiscount ? salePrice : price,
       originalPrice: hasDiscount ? price : null,
@@ -298,11 +299,11 @@ const UV_Landing: React.FC = () => {
                           return (
                             <>
                               <span className="text-2xl font-bold text-gray-900">
-                                ${(currentPrice || 0).toFixed(2)}
+                                ${formatCurrency(currentPrice)}
                               </span>
                               {hasDiscount && originalPrice && (
                                 <span className="text-lg text-gray-500 line-through">
-                                  ${originalPrice.toFixed(2)}
+                                  ${formatCurrency(originalPrice)}
                                 </span>
                               )}
                             </>
@@ -409,16 +410,16 @@ const UV_Landing: React.FC = () => {
                       {(() => {
                         const { currentPrice, originalPrice, hasDiscount } = getProductPrice(product);
                         return (
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-gray-900">
-                              ${(currentPrice || 0).toFixed(2)}
-                            </span>
-                            {hasDiscount && originalPrice && (
-                              <span className="text-sm text-gray-500 line-through">
-                                ${originalPrice.toFixed(2)}
+                            <div className="flex items-center gap-2">
+                              <span className="text-xl font-bold text-gray-900">
+                                ${formatCurrency(currentPrice)}
                               </span>
-                            )}
-                          </div>
+                              {hasDiscount && originalPrice && (
+                                <span className="text-lg text-gray-500 line-through">
+                                  ${formatCurrency(originalPrice)}
+                                </span>
+                              )}
+                            </div>
                         );
                       })()}
                     </div>

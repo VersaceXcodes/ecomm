@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { safeParseNumber } from '@/lib/formatters';
 
 // Types based on OpenAPI schemas
 export interface User {
@@ -284,7 +285,7 @@ export const useAppStore = create<AppState>()(
       set_cart_items: (items) => {
         const total_quantity = items.reduce((sum, item) => sum + item.quantity, 0);
         const subtotal = items.reduce((sum, item) => {
-          const price = item.product?.sale_price || item.product?.price || 0;
+          const price = safeParseNumber(item.product?.sale_price) || safeParseNumber(item.product?.price, 0);
           return sum + (price * item.quantity);
         }, 0);
         
