@@ -148,7 +148,7 @@ export interface AppState {
 
 // Helper function to generate session ID
 const generateSessionId = (): string => {
-  return 'sess_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now().toString(36);
+  return 'sess_' + Math.random().toString(36).substring(2, 11) + '_' + Date.now().toString(36);
 };
 
 export const useAppStore = create<AppState>()(

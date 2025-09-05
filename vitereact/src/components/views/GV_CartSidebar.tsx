@@ -301,7 +301,7 @@ const GV_CartSidebar: React.FC = () => {
               {cart_items.map((item) => {
                 if (!item.product) return null;
                 const isUpdating = updating_item_id === item.cart_item_id;
-                const effectivePrice = item.product.sale_price || item.product.price;
+                const effectivePrice = Number(item.product.sale_price) || Number(item.product.price) || 0;
                 
                 return (
                   <div key={item.cart_item_id} className="flex items-center space-x-4 p-3 bg-gray-50 rounded-lg">
@@ -331,11 +331,11 @@ const GV_CartSidebar: React.FC = () => {
                       <div className="flex items-center space-x-2 mt-1">
                         {item.product?.sale_price && (
                           <span className="text-xs text-gray-400 line-through">
-                            ${item.product.price.toFixed(2)}
+                            ${(Number(item.product.price) || 0).toFixed(2)}
                           </span>
                         )}
                         <span className="text-sm font-medium text-gray-900">
-                          ${effectivePrice.toFixed(2)}
+                          ${(effectivePrice || 0).toFixed(2)}
                         </span>
                       </div>
                     </div>
@@ -398,11 +398,11 @@ const GV_CartSidebar: React.FC = () => {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Subtotal:</span>
-                <span className="font-medium">${cart_subtotal.toFixed(2)}</span>
+                <span className="font-medium">${(cart_subtotal || 0).toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-lg font-semibold border-t pt-2">
                 <span>Total:</span>
-                <span>${cart_total.toFixed(2)}</span>
+                <span>${(cart_total || 0).toFixed(2)}</span>
               </div>
               <p className="text-xs text-gray-500">Shipping and taxes calculated at checkout</p>
             </div>

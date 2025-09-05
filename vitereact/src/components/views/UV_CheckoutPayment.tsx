@@ -157,14 +157,14 @@ const UV_CheckoutPayment: React.FC = () => {
     let formattedValue = value;
     
     if (field === 'card_number') {
-      formattedValue = formatCardNumber(value.replace(/\D/g, '').substr(0, 19));
+      formattedValue = formatCardNumber(value.replace(/\D/g, '').substring(0, 19));
       setCardType(detectCardType(formattedValue));
     } else if (field === 'cvv') {
-      formattedValue = value.replace(/\D/g, '').substr(0, 4);
+      formattedValue = value.replace(/\D/g, '').substring(0, 4);
     } else if (field === 'expiry_month') {
-      formattedValue = value.replace(/\D/g, '').substr(0, 2);
+      formattedValue = value.replace(/\D/g, '').substring(0, 2);
     } else if (field === 'expiry_year') {
-      formattedValue = value.replace(/\D/g, '').substr(0, 4);
+      formattedValue = value.replace(/\D/g, '').substring(0, 4);
     }
     
     setCreditCardForm(prev => ({

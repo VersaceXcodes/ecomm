@@ -252,7 +252,9 @@ const UV_ProductListing: React.FC = () => {
 
   // Get current price for display (sale price if available, otherwise regular price)
   const getCurrentPrice = (product: Product) => {
-    return product.sale_price || product.price;
+    const price = Number(product.price) || 0;
+    const salePrice = product.sale_price ? Number(product.sale_price) : null;
+    return salePrice || price;
   };
 
   // Get primary image URL
@@ -491,11 +493,11 @@ const UV_ProductListing: React.FC = () => {
                         <div className="mb-3">
                           <div className="flex items-center gap-2">
                             <span className="text-xl font-bold text-gray-900">
-                              ${getCurrentPrice(product).toFixed(2)}
+                              ${(getCurrentPrice(product) || 0).toFixed(2)}
                             </span>
                             {product.sale_price && (
                               <span className="text-sm text-gray-500 line-through">
-                                ${product.price.toFixed(2)}
+                                ${(Number(product.price) || 0).toFixed(2)}
                               </span>
                             )}
                           </div>

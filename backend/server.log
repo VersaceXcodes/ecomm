@@ -13,3 +13,109 @@ Server running on port 3000 and listening on 0.0.0.0
 127.0.0.1 - - [05/Sep/2025:11:33:53 +0000] "GET /health HTTP/1.1" 200 102 "-" "curl/7.88.1"
 127.0.0.1 - - [05/Sep/2025:11:34:39 +0000] "GET / HTTP/1.1" 200 827 "-" "curl/7.88.1"
 127.0.0.1 - - [05/Sep/2025:11:34:46 +0000] "GET / HTTP/1.1" 200 827 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:35:04 +0000] "GET / HTTP/1.1" 200 827 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:35:04 +0000] "GET / HTTP/1.1" 200 827 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:35:05 +0000] "GET / HTTP/1.1" 200 827 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:35:05 +0000] "GET / HTTP/1.1" 200 827 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:35:09 +0000] "GET / HTTP/1.1" 200 827 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:09 +0000] "GET /assets/index-NxHPNMTp.css HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:10 +0000] "GET /api/products?is_active=true&limit=5&sort_by=created_at&sort_order=desc HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:10 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:11 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:24 +0000] "GET / HTTP/1.1" 200 827 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:24 +0000] "GET /assets/index-NxHPNMTp.css HTTP/1.1" 200 78795 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:24 +0000] "GET /assets/index-CwZqHrjv.js HTTP/1.1" 200 581890 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:24 +0000] "GET / HTTP/1.1" 200 827 "-" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:24 +0000] "GET /assets/index-CwZqHrjv.js HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:24 +0000] "GET /assets/index-NxHPNMTp.css HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:24 +0000] "GET /favicon.png HTTP/1.1" 200 827 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:24 +0000] "GET /favicon.png HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:25 +0000] "GET /api/products?is_active=true&limit=5&sort_by=created_at&sort_order=desc HTTP/1.1" 200 4904 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:25 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 200 1119 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:25 +0000] "GET /api/products?is_active=true&limit=5&sort_by=created_at&sort_order=desc HTTP/1.1" 200 4904 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:35:25 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 200 1119 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:37:55 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 200 1119 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:38:36 +0000] "GET / HTTP/1.1" 200 827 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:38:37 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:38:37 +0000] "GET /api/products?is_active=true&limit=5&sort_by=created_at&sort_order=desc HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:38:38 +0000] "GET / HTTP/1.1" 200 827 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:15 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:15 +0000] "GET /api/products?is_active=true&limit=5&sort_by=created_at&sort_order=desc HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:15 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:16 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `tsx server.ts`[39m
+Server running on port 3000 and listening on 0.0.0.0
+127.0.0.1 - - [05/Sep/2025:11:39:41 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:42 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 200 1115 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:42 +0000] "GET /api/products?is_active=true&limit=5&sort_by=created_at&sort_order=desc HTTP/1.1" 200 4890 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:42 +0000] "GET /api/placeholder/400/400 HTTP/1.1" 404 132 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:42 +0000] "GET /api/placeholder/300/300 HTTP/1.1" 404 132 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:42 +0000] "GET / HTTP/1.1" 304 - "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:53 +0000] "GET /api/categories?is_active=true HTTP/1.1" 304 - "https://123ecomm.launchpulse.ai/products" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:39:53 +0000] "GET /api/products?is_active=true&sort_by=name&sort_order=asc&limit=20&offset=0 HTTP/1.1" 200 7614 "https://123ecomm.launchpulse.ai/products" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `tsx server.ts`[39m
+Server running on port 3000 and listening on 0.0.0.0
+127.0.0.1 - - [05/Sep/2025:11:40:08 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 200 1115 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:40:12 +0000] "GET /api/products?is_active=true&limit=5&sort_by=created_at&sort_order=desc HTTP/1.1" 200 4890 "-" "curl/7.88.1"
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `tsx server.ts`[39m
+Server running on port 3000 and listening on 0.0.0.0
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `tsx server.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `tsx server.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `tsx server.ts`[39m
+[32m[nodemon] restarting due to changes...[39m
+[32m[nodemon] starting `tsx server.ts`[39m
+Server running on port 3000 and listening on 0.0.0.0
+node:events:495
+      throw er; // Unhandled 'error' event
+      ^
+
+Error: listen EADDRINUSE: address already in use 0.0.0.0:3000
+    at __node_internal_captureLargerStackTrace (node:internal/errors:496:5)
+    at __node_internal_uvExceptionWithHostPort (node:internal/errors:593:12)
+    at Server.setupListenHandle [as _listen2] (node:net:1817:16)
+    at listenInCluster (node:net:1865:12)
+    at doListen (node:net:2014:7)
+    at process.processTicksAndRejections (node:internal/process/task_queues:83:21)
+Emitted 'error' event on Server instance at:
+    at emitErrorNT (node:net:1844:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:82:21) {
+  code: 'EADDRINUSE',
+  errno: -98,
+  syscall: 'listen',
+  address: '0.0.0.0',
+  port: 3000
+}
+
+Node.js v18.20.8
+[31m[nodemon] app crashed - waiting for file changes before starting...[39m
+127.0.0.1 - - [05/Sep/2025:11:40:49 +0000] "GET /api/products/prod_007 HTTP/1.1" 200 3181 "https://123ecomm.launchpulse.ai/products/prod_007" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:40:49 +0000] "GET /api/products/prod_007/reviews?limit=20&offset=0 HTTP/1.1" 200 133 "https://123ecomm.launchpulse.ai/products/prod_007" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:40:50 +0000] "PATCH /api/products/prod_007 HTTP/1.1" 200 19 "https://123ecomm.launchpulse.ai/products/prod_007" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:40:50 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 200 1115 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:40:50 +0000] "GET /placeholder-product.jpg HTTP/1.1" 200 827 "https://123ecomm.launchpulse.ai/products/prod_007" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:40:53 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 200 1115 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:40:58 +0000] "GET /api/products?is_active=true&sort_by=name&sort_order=asc&limit=20&offset=0 HTTP/1.1" 200 7614 "https://123ecomm.launchpulse.ai/products" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:01 +0000] "GET /api/products/prod_006 HTTP/1.1" 200 3011 "https://123ecomm.launchpulse.ai/products/prod_006" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:01 +0000] "PATCH /api/products/prod_006 HTTP/1.1" 200 18 "https://123ecomm.launchpulse.ai/products/prod_006" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:02 +0000] "GET /api/products/prod_006/reviews?limit=20&offset=0 HTTP/1.1" 200 133 "https://123ecomm.launchpulse.ai/products/prod_006" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:10 +0000] "POST /api/cart HTTP/1.1" 400 130 "https://123ecomm.launchpulse.ai/products/prod_006" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:13 +0000] "GET /api/placeholder/400/400 HTTP/1.1" 404 132 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:13 +0000] "GET /api/placeholder/300/300 HTTP/1.1" 404 132 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:26 +0000] "PATCH /api/products/prod_007 HTTP/1.1" 200 19 "https://123ecomm.launchpulse.ai/products/prod_007" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:30 +0000] "GET /api/placeholder/400/400 HTTP/1.1" 404 132 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:30 +0000] "GET /api/placeholder/300/300 HTTP/1.1" 404 132 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:34 +0000] "GET /api/products/prod_002/reviews?limit=20&offset=0 HTTP/1.1" 200 622 "https://123ecomm.launchpulse.ai/products/prod_002" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:35 +0000] "GET /api/products/prod_002 HTTP/1.1" 200 4065 "https://123ecomm.launchpulse.ai/products/prod_002" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:35 +0000] "PATCH /api/products/prod_002 HTTP/1.1" 200 18 "https://123ecomm.launchpulse.ai/products/prod_002" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:37 +0000] "POST /api/cart HTTP/1.1" 400 130 "https://123ecomm.launchpulse.ai/products/prod_002" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:43 +0000] "GET /api/placeholder/300/300 HTTP/1.1" 404 132 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:41:43 +0000] "GET /api/placeholder/400/400 HTTP/1.1" 404 132 "https://123ecomm.launchpulse.ai/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36"
+127.0.0.1 - - [05/Sep/2025:11:42:00 +0000] "GET /health HTTP/1.1" 200 102 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:42:03 +0000] "GET / HTTP/1.1" 200 827 "-" "curl/7.88.1"
+127.0.0.1 - - [05/Sep/2025:11:42:15 +0000] "GET /api/products?is_featured=true&limit=1&is_active=true HTTP/1.1" 200 1115 "-" "curl/7.88.1"

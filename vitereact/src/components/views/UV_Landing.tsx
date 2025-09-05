@@ -218,10 +218,12 @@ const UV_Landing: React.FC = () => {
 
   // Get product price display
   const getProductPrice = (product: ProductWithImages) => {
-    const hasDiscount = product.sale_price && product.sale_price < product.price;
+    const price = Number(product.price) || 0;
+    const salePrice = product.sale_price ? Number(product.sale_price) : null;
+    const hasDiscount = salePrice && salePrice < price;
     return {
-      currentPrice: hasDiscount ? product.sale_price : product.price,
-      originalPrice: hasDiscount ? product.price : null,
+      currentPrice: hasDiscount ? salePrice : price,
+      originalPrice: hasDiscount ? price : null,
       hasDiscount
     };
   };
@@ -296,7 +298,7 @@ const UV_Landing: React.FC = () => {
                           return (
                             <>
                               <span className="text-2xl font-bold text-gray-900">
-                                ${currentPrice?.toFixed(2)}
+                                ${(currentPrice || 0).toFixed(2)}
                               </span>
                               {hasDiscount && originalPrice && (
                                 <span className="text-lg text-gray-500 line-through">
@@ -409,7 +411,7 @@ const UV_Landing: React.FC = () => {
                         return (
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-gray-900">
-                              ${currentPrice?.toFixed(2)}
+                              ${(currentPrice || 0).toFixed(2)}
                             </span>
                             {hasDiscount && originalPrice && (
                               <span className="text-sm text-gray-500 line-through">

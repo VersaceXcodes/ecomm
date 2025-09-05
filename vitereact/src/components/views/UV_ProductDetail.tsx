@@ -292,8 +292,8 @@ const UV_ProductDetail: React.FC = () => {
     }
   };
 
-  const displayPrice = productData?.sale_price || productData?.price || 0;
-  const originalPrice = productData?.sale_price ? productData.price : null;
+  const displayPrice = Number(productData?.sale_price) || Number(productData?.price) || 0;
+  const originalPrice = productData?.sale_price ? Number(productData.price) || 0 : null;
   const isOnSale = !!productData?.sale_price;
   const isOutOfStock = (productData?.stock_quantity || 0) === 0;
 
@@ -399,9 +399,9 @@ const UV_ProductDetail: React.FC = () => {
               
               {/* Price */}
               <div className="flex items-center space-x-4">
-                <span className="text-3xl font-bold text-gray-900">${displayPrice.toFixed(2)}</span>
+                <span className="text-3xl font-bold text-gray-900">${(displayPrice || 0).toFixed(2)}</span>
                 {isOnSale && originalPrice && (
-                  <span className="text-xl text-gray-500 line-through">${originalPrice.toFixed(2)}</span>
+                  <span className="text-xl text-gray-500 line-through">${(originalPrice || 0).toFixed(2)}</span>
                 )}
                 {isOnSale && (
                   <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">

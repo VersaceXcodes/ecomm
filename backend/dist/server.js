@@ -537,8 +537,14 @@ app.get('/api/products', async (req, res) => {
             }
             const countResult = await client.query(countQuery, countParams);
             const total = parseInt(countResult.rows[0].total);
+            // Convert price fields to numbers
+            const products = result.rows.map(product => ({
+                ...product,
+                price: parseFloat(product.price),
+                sale_price: product.sale_price ? parseFloat(product.sale_price) : null
+            }));
             res.json({
-                products: result.rows,
+                products,
                 total,
                 limit: limitNum,
                 offset: offsetNum,
@@ -621,12 +627,18 @@ app.get('/api/products/:product_id', async (req, res) => {
             // Structure the response
             const response = {
                 ...product,
+                price: parseFloat(product.price),
+                sale_price: product.sale_price ? parseFloat(product.sale_price) : null,
                 category: product.category_id ? {
                     category_id: product.category_id,
                     name: product.category_name,
                     description: product.category_description
                 } : null,
-                related_products: relatedResult.rows,
+                related_products: relatedResult.rows.map(relatedProduct => ({
+                    ...relatedProduct,
+                    price: parseFloat(relatedProduct.price),
+                    sale_price: relatedProduct.sale_price ? parseFloat(relatedProduct.sale_price) : null
+                })),
                 average_rating: parseFloat(reviewStats.average_rating),
                 review_count: parseInt(reviewStats.review_count),
                 rating_breakdown: {
@@ -2493,8 +2505,14 @@ app.get('/api/admin/products', authenticateAdmin, async (req, res) => {
             }
             const countResult = await client.query(countQuery, countParams);
             const total = parseInt(countResult.rows[0].total);
+            // Convert price fields to numbers
+            const products = result.rows.map(product => ({
+                ...product,
+                price: parseFloat(product.price),
+                sale_price: product.sale_price ? parseFloat(product.sale_price) : null
+            }));
             res.json({
-                products: result.rows,
+                products,
                 total,
                 limit: limitNum,
                 offset: offsetNum,

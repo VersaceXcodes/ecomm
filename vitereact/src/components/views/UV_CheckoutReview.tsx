@@ -134,7 +134,7 @@ const UV_CheckoutReview: React.FC = () => {
   // Generate order number
   const generateOrderNumber = (): string => {
     const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substr(2, 5);
+    const random = Math.random().toString(36).substring(2, 7);
     return `ORD-${timestamp}-${random}`.toUpperCase();
   };
 
