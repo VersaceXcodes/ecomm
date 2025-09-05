@@ -1,0 +1,7 @@
+tunnel: d39667a8-a7ba-47c2-8d3b-54db17bdcc6a
+credentials-file: /app/.cloudflared/d39667a8-a7ba-47c2-8d3b-54db17bdcc6a.json
+
+ingress:
+  - hostname: 123ecomm.launchpulse.ai
+    service: http://localhost:3000
+  - service: http_status:404

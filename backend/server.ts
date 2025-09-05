@@ -71,6 +71,7 @@ const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       'https://123ecomm.launchpulse.ai',
+      'https://adjustable-echo-fitted-processors.trycloudflare.com',
       'http://localhost:3000',
       'http://localhost:5173',
       'http://localhost:4173'
