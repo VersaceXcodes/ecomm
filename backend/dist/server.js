@@ -404,14 +404,14 @@ app.get('/api/products', async (req, res) => {
         const client = await pool.connect();
         try {
             let query = `
-        SELECT DISTINCT p.*, 
+        SELECT p.*, 
                array_agg(DISTINCT jsonb_build_object(
                  'image_id', pi.image_id,
                  'image_url', pi.image_url,
                  'alt_text', pi.alt_text,
                  'display_order', pi.display_order,
                  'is_primary', pi.is_primary
-               ) ORDER BY pi.display_order, pi.created_at) FILTER (WHERE pi.image_id IS NOT NULL) as images
+               )) FILTER (WHERE pi.image_id IS NOT NULL) as images
         FROM products p
         LEFT JOIN product_images pi ON p.product_id = pi.product_id
         WHERE p.is_active = true
@@ -425,9 +425,9 @@ app.get('/api/products', async (req, res) => {
           p.name ILIKE $${paramCount} OR 
           p.brand ILIKE $${paramCount} OR 
           p.description ILIKE $${paramCount} OR
-          array_to_string(p.fragrance_notes_top, ' ') ILIKE $${paramCount} OR
-          array_to_string(p.fragrance_notes_middle, ' ') ILIKE $${paramCount} OR
-          array_to_string(p.fragrance_notes_base, ' ') ILIKE $${paramCount}
+          p.fragrance_notes_top::text ILIKE $${paramCount} OR
+          p.fragrance_notes_middle::text ILIKE $${paramCount} OR
+          p.fragrance_notes_base::text ILIKE $${paramCount}
         )`;
                 queryParams.push(`%${searchQuery}%`);
             }
@@ -501,9 +501,9 @@ app.get('/api/products', async (req, res) => {
           p.name ILIKE $${countParamIndex} OR 
           p.brand ILIKE $${countParamIndex} OR 
           p.description ILIKE $${countParamIndex} OR
-          array_to_string(p.fragrance_notes_top, ' ') ILIKE $${countParamIndex} OR
-          array_to_string(p.fragrance_notes_middle, ' ') ILIKE $${countParamIndex} OR
-          array_to_string(p.fragrance_notes_base, ' ') ILIKE $${countParamIndex}
+          p.fragrance_notes_top::text ILIKE $${countParamIndex} OR
+          p.fragrance_notes_middle::text ILIKE $${countParamIndex} OR
+          p.fragrance_notes_base::text ILIKE $${countParamIndex}
         )`;
                 countParams.push(`%${searchQuery}%`);
             }
@@ -572,7 +572,7 @@ app.get('/api/products/:product_id', async (req, res) => {
                  'alt_text', pi.alt_text,
                  'display_order', pi.display_order,
                  'is_primary', pi.is_primary
-               ) ORDER BY pi.display_order, pi.created_at) FILTER (WHERE pi.image_id IS NOT NULL) as images,
+               )) FILTER (WHERE pi.image_id IS NOT NULL) as images,
                c.category_id as category_id,
                c.name as category_name,
                c.description as category_description
@@ -609,7 +609,7 @@ app.get('/api/products/:product_id', async (req, res) => {
                  'alt_text', pi.alt_text,
                  'display_order', pi.display_order,
                  'is_primary', pi.is_primary
-               ) ORDER BY pi.display_order, pi.created_at) FILTER (WHERE pi.image_id IS NOT NULL) as images
+               )) FILTER (WHERE pi.image_id IS NOT NULL) as images
         FROM products p
         LEFT JOIN product_images pi ON p.product_id = pi.product_id
         WHERE p.product_id != $1 
@@ -684,14 +684,20 @@ app.patch('/api/products/:product_id', async (req, res) => {
 */
 app.get('/api/categories', async (req, res) => {
     try {
-        const { is_active = true } = req.query;
+        const { is_active } = req.query;
         const client = await pool.connect();
         try {
             let query = 'SELECT * FROM categories';
             const queryParams = [];
-            if (is_active !== undefined) {
+            // Default to showing only active categories
+            const showActive = is_active === undefined || is_active === 'true';
+            if (showActive) {
                 query += ' WHERE is_active = $1';
-                queryParams.push(is_active === 'true');
+                queryParams.push(true);
+            }
+            else if (is_active === 'false') {
+                query += ' WHERE is_active = $1';
+                queryParams.push(false);
             }
             query += ' ORDER BY display_order ASC, name ASC';
             const result = await client.query(query, queryParams);
