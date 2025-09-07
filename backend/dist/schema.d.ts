@@ -38,7 +38,7 @@ export declare const createUserInputSchema: z.ZodObject<{
     password_hash: z.ZodString;
     first_name: z.ZodString;
     last_name: z.ZodString;
-    phone: z.ZodNullable<z.ZodString>;
+    phone: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
     email?: string;
     password_hash?: string;

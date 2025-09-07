@@ -35,6 +35,7 @@ const corsOptions = {
     origin: function (origin, callback) {
         const allowedOrigins = [
             'https://123ecomm.launchpulse.ai',
+            'https://adjustable-echo-fitted-processors.trycloudflare.com',
             'http://localhost:3000',
             'http://localhost:5173',
             'http://localhost:4173'
@@ -186,12 +187,21 @@ const optionalAuth = async (req, res, next) => {
 // AUTHENTICATION ENDPOINTS
 // ============================================================================
 /*
+  User registration endpoint - GET method (returns method not allowed)
+  Handles incorrect GET requests to registration endpoint
+*/
+app.get('/api/auth/register', (req, res) => {
+    res.status(405).json(createErrorResponse('Method not allowed. Use POST to register.', null, 'METHOD_NOT_ALLOWED'));
+});
+/*
   User registration endpoint
   Creates new user account with validation and automatic login
 */
 app.post('/api/auth/register', async (req, res) => {
     try {
+        console.log('Registration request body:', JSON.stringify(req.body, null, 2));
         const validatedData = createUserInputSchema.parse(req.body);
+        console.log('Validated data:', JSON.stringify(validatedData, null, 2));
         const { email, password_hash, first_name, last_name, phone } = validatedData;
         const client = await pool.connect();
         try {
@@ -226,6 +236,7 @@ app.post('/api/auth/register', async (req, res) => {
     }
     catch (error) {
         if (error.name === 'ZodError') {
+            console.error('Registration validation error:', error.errors);
             return res.status(400).json(createErrorResponse('Validation error', error.errors, 'VALIDATION_ERROR'));
         }
         console.error('Registration error:', error);

@@ -19,7 +19,7 @@ export const createUserInputSchema = z.object({
     password_hash: z.string().min(1),
     first_name: z.string().min(1).max(255),
     last_name: z.string().min(1).max(255),
-    phone: z.string().max(50).nullable()
+    phone: z.string().max(50).nullable().optional()
 });
 export const updateUserInputSchema = z.object({
     user_id: z.string(),
