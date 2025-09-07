@@ -120,6 +120,16 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Placeholder image endpoint
+app.get('/api/placeholder/:width/:height', (req, res) => {
+  const { width, height } = req.params;
+  const w = parseInt(width) || 300;
+  const h = parseInt(height) || 300;
+  
+  // Redirect to a placeholder image service
+  res.redirect(`https://via.placeholder.com/${w}x${h}/cccccc/666666?text=Product+Image`);
+});
+
 // Error response utility
 interface ErrorResponse {
   success: false;
@@ -2886,19 +2896,20 @@ app.post('/api/newsletter/unsubscribe', async (req, res) => {
 */
 app.post('/api/admin/auth/login', async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { username, email, password } = req.body;
+    const loginIdentifier = username || email;
 
-    if (!username || !password) {
-      return res.status(400).json(createErrorResponse('Username and password are required', null, 'MISSING_CREDENTIALS'));
+    if (!loginIdentifier || !password) {
+      return res.status(400).json(createErrorResponse('Username/email and password are required', null, 'MISSING_CREDENTIALS'));
     }
 
     const client = await pool.connect();
     
     try {
-      // Find admin user
+      // Find admin user by username or email
       const result = await client.query(
-        'SELECT * FROM admin_users WHERE username = $1 AND is_active = true',
-        [username]
+        'SELECT * FROM admin_users WHERE (username = $1 OR email = $1) AND is_active = true',
+        [loginIdentifier]
       );
 
       if (result.rows.length === 0) {
