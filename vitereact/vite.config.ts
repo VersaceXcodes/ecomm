@@ -35,7 +35,14 @@ export default defineConfig({
 	],
 	server: {
 		host: true,
-		allowedHosts: ['.launchpulse.ai', '.trycloudflare.com', 'localhost'],
+		port: 5173,
+		allowedHosts: ['.launchpulse.ai', '.trycloudflare.com', 'localhost', '.ngrok.io', '.tunnel.dev'],
+		cors: true,
+		headers: {
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+			'Access-Control-Allow-Headers': 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+		}
 	},
 	resolve: {
 		alias: {
@@ -45,5 +52,28 @@ export default defineConfig({
 	},
 	build: {
 		outDir: "dist",
+		rollupOptions: {
+			output: {
+				manualChunks: {
+					vendor: ['react', 'react-dom'],
+					router: ['react-router-dom'],
+					ui: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-select'],
+					query: ['@tanstack/react-query'],
+					redux: ['@reduxjs/toolkit', 'react-redux', 'redux'],
+					charts: ['recharts'],
+					motion: ['framer-motion'],
+					utils: ['axios', 'date-fns', 'clsx', 'class-variance-authority']
+				}
+			}
+		},
+		chunkSizeWarningLimit: 1000,
+		sourcemap: false,
+		minify: 'terser',
+		terserOptions: {
+			compress: {
+				drop_console: true,
+				drop_debugger: true
+			}
+		}
 	},
 });

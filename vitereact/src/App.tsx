@@ -1,35 +1,35 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useAppStore } from '@/store/main';
 
-// Global Views
+// Global Views - Keep these as regular imports since they're used frequently
 import GV_TopNavigation from '@/components/views/GV_TopNavigation';
 import GV_Footer from '@/components/views/GV_Footer';
 import GV_CartSidebar from '@/components/views/GV_CartSidebar';
 import GV_MobileMenu from '@/components/views/GV_MobileMenu';
 
-// Unique Views
-import UV_Landing from '@/components/views/UV_Landing';
-import UV_ProductListing from '@/components/views/UV_ProductListing';
-import UV_ProductDetail from '@/components/views/UV_ProductDetail';
-import UV_FullCart from '@/components/views/UV_FullCart';
-import UV_Login from '@/components/views/UV_Login';
-import UV_Registration from '@/components/views/UV_Registration';
-import UV_UserDashboard from '@/components/views/UV_UserDashboard';
-import UV_OrderHistory from '@/components/views/UV_OrderHistory';
-import UV_AddressBook from '@/components/views/UV_AddressBook';
-import UV_Wishlist from '@/components/views/UV_Wishlist';
-import UV_CheckoutShipping from '@/components/views/UV_CheckoutShipping';
-import UV_CheckoutPayment from '@/components/views/UV_CheckoutPayment';
-import UV_CheckoutReview from '@/components/views/UV_CheckoutReview';
-import UV_OrderConfirmation from '@/components/views/UV_OrderConfirmation';
-import UV_AdminLogin from '@/components/views/UV_AdminLogin';
-import UV_AdminProducts from '@/components/views/UV_AdminProducts';
-import UV_AdminOrders from '@/components/views/UV_AdminOrders';
-import UV_Contact from '@/components/views/UV_Contact';
-import UV_About from '@/components/views/UV_About';
-import UV_PrivacyPolicy from '@/components/views/UV_PrivacyPolicy';
+// Lazy load unique views for better performance
+const UV_Landing = lazy(() => import('@/components/views/UV_Landing'));
+const UV_ProductListing = lazy(() => import('@/components/views/UV_ProductListing'));
+const UV_ProductDetail = lazy(() => import('@/components/views/UV_ProductDetail'));
+const UV_FullCart = lazy(() => import('@/components/views/UV_FullCart'));
+const UV_Login = lazy(() => import('@/components/views/UV_Login'));
+const UV_Registration = lazy(() => import('@/components/views/UV_Registration'));
+const UV_UserDashboard = lazy(() => import('@/components/views/UV_UserDashboard'));
+const UV_OrderHistory = lazy(() => import('@/components/views/UV_OrderHistory'));
+const UV_AddressBook = lazy(() => import('@/components/views/UV_AddressBook'));
+const UV_Wishlist = lazy(() => import('@/components/views/UV_Wishlist'));
+const UV_CheckoutShipping = lazy(() => import('@/components/views/UV_CheckoutShipping'));
+const UV_CheckoutPayment = lazy(() => import('@/components/views/UV_CheckoutPayment'));
+const UV_CheckoutReview = lazy(() => import('@/components/views/UV_CheckoutReview'));
+const UV_OrderConfirmation = lazy(() => import('@/components/views/UV_OrderConfirmation'));
+const UV_AdminLogin = lazy(() => import('@/components/views/UV_AdminLogin'));
+const UV_AdminProducts = lazy(() => import('@/components/views/UV_AdminProducts'));
+const UV_AdminOrders = lazy(() => import('@/components/views/UV_AdminOrders'));
+const UV_Contact = lazy(() => import('@/components/views/UV_Contact'));
+const UV_About = lazy(() => import('@/components/views/UV_About'));
+const UV_PrivacyPolicy = lazy(() => import('@/components/views/UV_PrivacyPolicy'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -86,7 +86,9 @@ const CustomerLayout: React.FC<{ children: React.ReactNode; showCartSidebar?: bo
       <GV_MobileMenu />
       {showCartSidebar && <GV_CartSidebar />}
       <main className="flex-1">
-        {children}
+        <Suspense fallback={<LoadingSpinner />}>
+          {children}
+        </Suspense>
       </main>
       <GV_Footer />
     </div>
@@ -98,7 +100,9 @@ const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-100">
       <main className="min-h-screen">
-        {children}
+        <Suspense fallback={<LoadingSpinner />}>
+          {children}
+        </Suspense>
       </main>
     </div>
   );
